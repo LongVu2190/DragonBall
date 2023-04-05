@@ -1,0 +1,11 @@
+C:\Users\LongVu\Desktop\DragonBall\DragonBall\bin\Debug\DragonBall.exe.config
+C:\Users\LongVu\Desktop\DragonBall\DragonBall\bin\Debug\DragonBall.exe
+C:\Users\LongVu\Desktop\DragonBall\DragonBall\bin\Debug\DragonBall.pdb
+C:\Users\LongVu\Desktop\DragonBall\DragonBall\obj\Debug\DragonBall.csproj.AssemblyReference.cache
+C:\Users\LongVu\Desktop\DragonBall\DragonBall\obj\Debug\DragonBall.csproj.SuggestedBindingRedirects.cache
+C:\Users\LongVu\Desktop\DragonBall\DragonBall\obj\Debug\DragonBall.DragonBall.resources
+C:\Users\LongVu\Desktop\DragonBall\DragonBall\obj\Debug\DragonBall.Properties.Resources.resources
+C:\Users\LongVu\Desktop\DragonBall\DragonBall\obj\Debug\DragonBall.csproj.GenerateResource.cache
+C:\Users\LongVu\Desktop\DragonBall\DragonBall\obj\Debug\DragonBall.csproj.CoreCompileInputs.cache
+C:\Users\LongVu\Desktop\DragonBall\DragonBall\obj\Debug\DragonBall.exe
+C:\Users\LongVu\Desktop\DragonBall\DragonBall\obj\Debug\DragonBall.pdb
