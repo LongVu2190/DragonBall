@@ -63,7 +63,7 @@ namespace DragonBall
             playerMovements = Directory.GetFiles("Goku0", "*.png").ToList();
 
             // Lấy hình thứ 9 trong thư mục Goku
-            player = Image.FromFile(playerMovements[9]);
+            player = Image.FromFile(playerMovements[10]);
         }
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -239,8 +239,8 @@ namespace DragonBall
             }
             else if (form == 0 && isTransform)
             {
-                start = 9;
-                end = 15;
+                start = 10;
+                end = 16;
             }
             else if (form == 0 && status == Enums.Move.Right)
             {
@@ -255,8 +255,8 @@ namespace DragonBall
 
             else if (form == 1 && isTransform)
             {
-                start = 9;
-                end = 16;
+                start = 10;
+                end = 17;
             }
             else if (form == 1 && status == Enums.Move.Right)
             {
@@ -271,8 +271,8 @@ namespace DragonBall
             
             else if (form == 2 && isTransform)
             {
-                start = 9;
-                end = 19;
+                start = 10;
+                end = 20;
             }
             else if (form == 2 && status == Enums.Move.Right)
             {
@@ -287,8 +287,8 @@ namespace DragonBall
 
             else if (form == 3 && isTransform)
             {
-                start = 9;
-                end = 26;
+                start = 10;
+                end = 27;
             }
             else if (form == 3 && status == Enums.Move.Right)
             {
@@ -363,7 +363,7 @@ namespace DragonBall
                 a.Y = bulletY;
                 a.Width = bulletWidth;
                 a.Height = bulletHeight;
-                a.Image = Image.FromFile(playerMovements[8]);
+                a.Image = Image.FromFile(playerMovements[9]);
                 a.isMoving = true;
                 
                 bullets.Add(a);
