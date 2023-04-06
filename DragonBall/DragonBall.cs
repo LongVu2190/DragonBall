@@ -51,7 +51,7 @@ namespace DragonBall
         {
             InitializeComponent();
             SetUp();
-            AllocConsole();
+            //AllocConsole();
         }
 
         private void SetUp()
