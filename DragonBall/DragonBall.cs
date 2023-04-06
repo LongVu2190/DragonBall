@@ -300,6 +300,22 @@ namespace DragonBall
                 start = 3;
                 end = 5;
             }
+
+            else if (form == 4 && isTransform)
+            {
+                start = 10;
+                end = 22;
+            }
+            else if (form == 4 && status == Enums.Move.Right)
+            {
+                start = 0;
+                end = 2;
+            }
+            else if (form == 4 && status == Enums.Move.Left)
+            {
+                start = 3;
+                end = 5;
+            }
         }
         private void DragonBall_KeyDown(object sender, KeyEventArgs e)
         {
@@ -352,6 +368,14 @@ namespace DragonBall
                 steps = 0;
                 form = 3;
             }
+            if (e.KeyCode == Keys.D5)
+            {
+                playerMovements = Directory.GetFiles("Goku4", "*.png").ToList();
+                isTransform = true;
+                slowDownFrameRate = 0;
+                steps = 0;
+                form = 4;
+            }
             if (e.KeyCode == Keys.Space && delayShoot == 10)
             {
                 delayShoot = 0;
@@ -392,6 +416,11 @@ namespace DragonBall
             {
                 goDown = false;
             }
+        }
+
+        private void EndGame()
+        {
+
         }
     }
 }
