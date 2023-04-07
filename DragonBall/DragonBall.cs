@@ -92,6 +92,7 @@ namespace DragonBall
         // Nếu đủ score thì biến hình lên cấp
         private void Level_Tick(object sender, EventArgs e)
         {
+            if (score == 50) isEnd = true;
             if (!isStart) return;
 
             if (score == 0)
@@ -377,6 +378,9 @@ namespace DragonBall
         }
         private void EndGame()
         {
+            Timer.Enabled = false;
+            Level.Enabled = false;
+            MessageBox.Show("You win", "Notification");
             Application.Exit();
         }
         private void Transformation(int form, int delayShootTime)
