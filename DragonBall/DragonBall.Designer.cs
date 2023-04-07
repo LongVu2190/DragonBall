@@ -32,6 +32,7 @@
             this.Timer = new System.Windows.Forms.Timer(this.components);
             this.test = new System.Windows.Forms.PictureBox();
             this.score_lb = new System.Windows.Forms.Label();
+            this.Level = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.test)).BeginInit();
             this.SuspendLayout();
             // 
@@ -59,6 +60,12 @@
             this.score_lb.TabIndex = 1;
             this.score_lb.Text = "label1";
             // 
+            // Level
+            // 
+            this.Level.Enabled = true;
+            this.Level.Interval = 20;
+            this.Level.Tick += new System.EventHandler(this.Level_Tick);
+            // 
             // DragonBall
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -85,6 +92,7 @@
         private System.Windows.Forms.Timer Timer;
         private System.Windows.Forms.PictureBox test;
         private System.Windows.Forms.Label score_lb;
+        private System.Windows.Forms.Timer Level;
     }
 }
 

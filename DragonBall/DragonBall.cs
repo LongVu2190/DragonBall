@@ -16,22 +16,22 @@ namespace DragonBall
 {
     public partial class DragonBall : Form
     {
+        bool isStart = false, isEnd = false;
         List<Bullets> bullets = new List<Bullets>(); // List chứa đạn
         Image player;
 
         List<string> playerMovements = new List<string>(); // List này chứa các hình chuyển động
 
-        int steps = 0; // Index để thay đổi hình
-
-        int start, end; // Khoảng hình để làm animation
+        int stepFrame = 0; // Index để thay đổi hình
+        int startFrame, endFrame; // Khoảng hình để làm animation
         int slowDownFrameRate = 0; // Giảm FPS xuống (Di chuyển FPS cao, Hoạt ảnh FPS thấp)
-        int maxSlowDownFrameRate = 6;
+        int maxSlowDownFrameRate = 6; // Giảm FPS xuống 6 lần
 
-        int delayShoot = 0, delayTime = 15; // Thời gian giữa những lần bắn
+        int delayShoot = 0, delayShootTime = 15; // Thời gian giữa những lần bắn
         int score = 0; // Điểm
 
         bool goLeft, goRight, goUp, goDown;
-        bool isLocked = false;
+        bool isLocked = false; // Khóa di chuyển và bắn
 
         int playerX; // Tọa độ X của player
         int playerY = 0; //Tọa độ Y của player
@@ -45,117 +45,20 @@ namespace DragonBall
         public DragonBall()
         {
             InitializeComponent();
-            SetUp();
             AllocConsole();
+            StartGame();
         }
 
-        private void SetUp()
-        {
-            this.BackgroundImageLayout = ImageLayout.Stretch;
-            this.DoubleBuffered = true;
-
-            // Lấy hết hình trong thư mục Goku (Nằm ở thư mục debug)
-            playerMovements = Directory.GetFiles("Goku0", "*.png").ToList();
-
-            // Lấy hình thứ 9 trong thư mục Goku
-            player = Image.FromFile(playerMovements[10]);
-        }
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool AllocConsole();
-        private void Timer_Tick(object sender, EventArgs e)
-        {
-            if (delayShoot != delayTime) // Tăng thời gian giữa những lần bắn
-            {
-                delayShoot++;
-            }
-            if (bullets != null) // Vẽ đạn nếu list đạn không rỗng
-            {
-                AnimateBullet();
-            }
-            //// Di chuyển lên phải
-            //if (goUp && goRight && (playerX + playerSpeed) < this.ClientSize.Width - playerWidth && (playerY - playerSpeed) > 0)
-            //{
-            //    playerY -= playerSpeed;
-            //    playerX += playerSpeed;
-            //    SetStartEnd(form, Enums.Move.Right);
-            //    AnimatePlayer(); // Lấy các hình index từ 0 -> 2 để làm hoạt ảnh cho nhân vật
-            //}
-
-            //// Di chuyển lên trái
-            //else if (goUp && goLeft && (playerX - playerSpeed) > 0 && (playerX - playerSpeed) > 0 && (playerY - playerSpeed) > 0)
-            //{
-            //    playerY -= playerSpeed;
-            //    playerX -= playerSpeed;
-            //    SetStartEnd(form, Enums.Move.Left);
-            //    AnimatePlayer(); // Lấy các hình index từ 0 -> 2 để làm hoạt ảnh cho nhân vật
-            //}
-
-            //// Di chuyển xuống phải
-            //else if (goDown && goRight && (playerX + playerSpeed) < this.ClientSize.Width - playerHeight && (playerY + playerSpeed) < this.ClientSize.Height - playerHeight)
-            //{
-            //    playerY += playerSpeed;
-            //    playerX += playerSpeed;
-            //    SetStartEnd(form, Enums.Move.Right);
-            //    AnimatePlayer(); // Lấy các hình index từ 0 -> 2 để làm hoạt ảnh cho nhân vật
-            //}
-
-            //// Di chuyển xuống trái
-            //else if (goDown && goLeft && (playerX - playerSpeed) > 0 && (playerY + playerSpeed) < this.ClientSize.Height - playerHeight)
-            //{
-            //    playerY += playerSpeed;
-            //    playerX -= playerSpeed;
-            //    SetStartEnd(form, Enums.Move.Left);
-            //    AnimatePlayer(); // Lấy các hình index từ 0 -> 2 để làm hoạt ảnh cho nhân vật
-            //}
-
-            // Di chuyển lên
-            if (goUp && (playerY - playerSpeed) > 0)
-            {
-                playerY -= playerSpeed;
-                SetStartEnd(form, Enums.Move.Right);
-                AnimatePlayer();
-            }
-
-            // Di chuyển xuống
-            if (goDown && (playerY + playerSpeed) < this.ClientSize.Height - playerHeight)
-            {  
-                playerY += playerSpeed;
-                SetStartEnd(form, Enums.Move.Right);
-                AnimatePlayer();
-            }
-
-            // Di chuyển trái
-            if (goLeft && (playerX - playerSpeed) > 0)
-            {
-                playerX -= playerSpeed;
-                SetStartEnd(form, Enums.Move.Left);
-                AnimatePlayer();
-            }
-
-            // Di chuyển phải
-            if (goRight && (playerX + playerSpeed) < this.ClientSize.Width - playerWidth)
-            {
-                playerX += playerSpeed;
-                SetStartEnd(form, Enums.Move.Right);
-                AnimatePlayer();
-            }
-
-            if (!isTransform && !goLeft)
-            {
-                SetStartEnd(form, Enums.Move.Right);
-                AnimatePlayer();
-            }
-            else if (isTransform)
-            {
-                SetStartEnd(form, Enums.Move.Right);
-                AnimatePlayer();               
-            }
-
-            this.Invalidate();
-        }
         private void DragonBall_Paint(object sender, PaintEventArgs e)
         {
+            if (!isStart) return;
+            if (isEnd)
+            {
+                EndGame();
+            }
             // Vẽ nhân vật
             Graphics Canvas = e.Graphics;
             Canvas.DrawImage(player, playerX, playerY, playerWidth, playerHeight);
@@ -186,11 +89,107 @@ namespace DragonBall
             }
         }
 
+        // Nếu đủ score thì biến hình lên cấp
+        private void Level_Tick(object sender, EventArgs e)
+        {
+            if (!isStart) return;
+
+            if (score == 0)
+            {
+                playerMovements = Directory.GetFiles("Goku0", "*.png").ToList();
+                Transformation(0, 15);
+                score++;
+            }
+            else if (score == 10)
+            {
+                playerMovements = Directory.GetFiles("Goku1", "*.png").ToList();
+                Transformation(1, 13);
+                score++;
+            }
+            else if (score == 20)
+            {
+                playerMovements = Directory.GetFiles("Goku2", "*.png").ToList();
+                Transformation(2, 10);
+                score++;
+            }
+            else if (score == 30)
+            {
+                playerMovements = Directory.GetFiles("Goku3", "*.png").ToList();
+                Transformation(3, 8);
+                score++;
+            }
+            else if (score == 40)
+            {
+                playerMovements = Directory.GetFiles("Goku4", "*.png").ToList();
+                Transformation(4, 6);
+                score++;
+            }
+
+        }
+
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            if (delayShoot != delayShootTime) // Tăng thời gian giữa những lần bắn
+            {
+                delayShoot++;
+            }
+
+            if (bullets != null) // Vẽ đạn nếu list đạn không rỗng
+            {
+                AnimateBullet();
+            }
+
+            if (isTransform)
+            {
+                SetStartEndGoku(form, Enums.Move.Right);
+                AnimatePlayer();
+            }
+            else
+            {
+                SetStartEndGoku(form, Enums.Move.Right);
+                AnimatePlayer();
+            }
+
+            // Di chuyển lên
+            if (goUp && (playerY - playerSpeed) > 0)
+            {
+                playerY -= playerSpeed;
+                SetStartEndGoku(form, Enums.Move.Right);
+                AnimatePlayer();
+            }
+
+            // Di chuyển xuống
+            if (goDown && (playerY + playerSpeed) < this.ClientSize.Height - playerHeight)
+            {
+                playerY += playerSpeed;
+                SetStartEndGoku(form, Enums.Move.Right);
+                AnimatePlayer();
+            }
+
+            // Di chuyển trái
+            if (goLeft && (playerX - playerSpeed) > 0)
+            {
+                playerX -= playerSpeed;
+                SetStartEndGoku(form, Enums.Move.Left);
+                AnimatePlayer();
+            }
+
+            // Di chuyển phải
+            if (goRight && (playerX + playerSpeed) < this.ClientSize.Width - playerWidth)
+            {
+                playerX += playerSpeed;
+                SetStartEndGoku(form, Enums.Move.Right);
+                AnimatePlayer();
+            }
+
+            this.Invalidate();
+        }
+
         private void AnimateBullet()
         {
             if (bullets == null) return;
 
-            for (int i = 0; i <  bullets.Count; i++)
+            for (int i = 0; i < bullets.Count; i++)
             {
                 if (bullets[i].X + bullets[i].Width < this.ClientSize.Width) // Bay trong màn hình
                 {
@@ -205,117 +204,126 @@ namespace DragonBall
             }
         }
         private void AnimatePlayer()
-        {           
+        {
             slowDownFrameRate += 1;
             if (slowDownFrameRate == maxSlowDownFrameRate) // Giảm FPS của hoạt ảnh nhân vật xuống
             {
-                steps++;
+                stepFrame++;
                 slowDownFrameRate = 0;
             }
-            if (steps > end || steps < start) // Đảm bảo lấy hình trong khoảng index từ start -> end
+            if (stepFrame > endFrame || stepFrame < startFrame) // Đảm bảo lấy hình trong khoảng index từ startFrame -> endFrame
             {
-                steps = start;
+                stepFrame = startFrame;
             }
-            if (steps == end)
+            if (stepFrame == endFrame)
             {
                 isShot = false;
                 isTransform = false;
                 isLocked = false;
             }
-            player = Image.FromFile(playerMovements[steps]);
+            player = Image.FromFile(playerMovements[stepFrame]);
         }
-        
+
         // Để lựa chọn ảnh nhân vật sẽ được vẽ lên
-        private void SetStartEnd(int form, Enums.Move status)
+        private void SetStartEndGoku(int form, Enums.Move status)
         {
             if (isShot)
             {
-                start = 6;
-                end = 8;
+                startFrame = 6;
+                endFrame = 8;
             }
             else if (form == 0 && isTransform)
             {
-                start = 10;
-                end = 16;
+                startFrame = 10;
+                endFrame = 16;
             }
             else if (form == 0 && status == Enums.Move.Right)
             {
-                start = 0;
-                end = 2;
+                startFrame = 0;
+                endFrame = 2;
             }
             else if (form == 0 && status == Enums.Move.Left)
             {
-                start = 3;
-                end = 5;
+                startFrame = 3;
+                endFrame = 5;
             }
 
             else if (form == 1 && isTransform)
             {
-                start = 10;
-                end = 17;
+                startFrame = 10;
+                endFrame = 17;
             }
             else if (form == 1 && status == Enums.Move.Right)
             {
-                start = 0;
-                end = 2;
+                startFrame = 0;
+                endFrame = 2;
             }
             else if (form == 1 && status == Enums.Move.Left)
             {
-                start = 3;
-                end = 5;
-            }         
-            
+                startFrame = 3;
+                endFrame = 5;
+            }
+
             else if (form == 2 && isTransform)
             {
-                start = 10;
-                end = 20;
+                startFrame = 10;
+                endFrame = 20;
             }
             else if (form == 2 && status == Enums.Move.Right)
             {
-                start = 0;
-                end = 2;
+                startFrame = 0;
+                endFrame = 2;
             }
             else if (form == 2 && status == Enums.Move.Left)
             {
-                start = 3;
-                end = 5;
+                startFrame = 3;
+                endFrame = 5;
             }
 
             else if (form == 3 && isTransform)
             {
-                start = 10;
-                end = 27;
+                startFrame = 10;
+                endFrame = 27;
             }
             else if (form == 3 && status == Enums.Move.Right)
             {
-                start = 0;
-                end = 2;
+                startFrame = 0;
+                endFrame = 2;
             }
             else if (form == 3 && status == Enums.Move.Left)
             {
-                start = 3;
-                end = 5;
+                startFrame = 3;
+                endFrame = 5;
             }
 
             else if (form == 4 && isTransform)
             {
-                start = 10;
-                end = 22;
+                startFrame = 10;
+                endFrame = 22;
             }
             else if (form == 4 && status == Enums.Move.Right)
             {
-                start = 0;
-                end = 2;
+                startFrame = 0;
+                endFrame = 2;
             }
             else if (form == 4 && status == Enums.Move.Left)
             {
-                start = 3;
-                end = 5;
+                startFrame = 3;
+                endFrame = 5;
             }
         }
         private void DragonBall_KeyDown(object sender, KeyEventArgs e)
         {
-            if (isLocked) return;
+            if (e.KeyCode == Keys.G)
+            {
+                isStart = true;
+            }
+            if (e.KeyCode == Keys.H)
+            {
+                isEnd = true;
+            }
+
+            if (isLocked || !isStart) return;
             // Nhấn phím thì là true
             if (e.KeyCode == Keys.A)
             {
@@ -333,76 +341,34 @@ namespace DragonBall
             {
                 goDown = true;
             }
-            if (e.KeyCode == Keys.D1)
+            //if (e.KeyCode == Keys.D1)
+            //{
+            //    playerMovements = Directory.GetFiles("Goku0", "*.png").ToList();
+            //    Transformation(0, 15);
+            //}
+            //if (e.KeyCode == Keys.D2)
+            //{
+            //    playerMovements = Directory.GetFiles("Goku1", "*.png").ToList();
+            //    Transformation(1, 13);
+            //}
+            //if (e.KeyCode == Keys.D3)
+            //{
+            //    playerMovements = Directory.GetFiles("Goku2", "*.png").ToList();
+            //    Transformation(2, 10);
+            //}
+            //if (e.KeyCode == Keys.D4)
+            //{
+            //    playerMovements = Directory.GetFiles("Goku3", "*.png").ToList();
+            //    Transformation(3, 8);
+            //}
+            //if (e.KeyCode == Keys.D5)
+            //{
+            //    playerMovements = Directory.GetFiles("Goku4", "*.png").ToList();
+            //    Transformation(4, 6);
+            //}
+            if (e.KeyCode == Keys.Space && !isTransform)
             {
-                SetNoMove(); // Khóa di chuyển và bắn trong lúc biến hình
-                playerMovements = Directory.GetFiles("Goku0", "*.png").ToList();
-                isTransform = true;
-                slowDownFrameRate = 0;
-                steps = 0;
-                form = 0;
-                delayShoot = 0;
-                delayTime = 15;
-            }
-            if (e.KeyCode == Keys.D2)
-            {
-                SetNoMove();
-                playerMovements = Directory.GetFiles("Goku1", "*.png").ToList();
-                isTransform = true;
-                slowDownFrameRate = 0;
-                steps = 0;
-                form = 1;
-                delayShoot = 0;
-                delayTime = 13;
-            }
-            if (e.KeyCode == Keys.D3)
-            {
-                SetNoMove();
-                playerMovements = Directory.GetFiles("Goku2", "*.png").ToList();
-                isTransform = true;
-                slowDownFrameRate = 0;
-                steps = 0;
-                form = 2;
-                delayShoot = 0;
-                delayTime = 10;
-            }
-            if (e.KeyCode == Keys.D4)
-            {
-                SetNoMove();
-                playerMovements = Directory.GetFiles("Goku3", "*.png").ToList();
-                isTransform = true;
-                slowDownFrameRate = 0;
-                steps = 0;
-                form = 3;
-                delayShoot = 0;
-                delayTime = 8;
-            }
-            if (e.KeyCode == Keys.D5)
-            {
-                SetNoMove();
-                playerMovements = Directory.GetFiles("Goku4", "*.png").ToList();
-                isTransform = true;
-                slowDownFrameRate = 0;
-                steps = 0;
-                form = 4;
-                delayShoot = 0;
-                delayTime = 6;
-            }
-            if (e.KeyCode == Keys.Space && delayShoot == delayTime)
-            {
-                delayShoot = 0;
-
-                Bullets a = new Bullets(playerX + playerWidth,
-                                        playerY + playerHeight / 2 + 20,
-                                        bulletWidth,
-                                        bulletHeight,
-                                        true);
-                a.Image = Image.FromFile(playerMovements[9]);               
-                bullets.Add(a);
-
-                isShot = true;
-                slowDownFrameRate = 0;
-                steps = 0;
+                Shooting();
             }
         }
         private void DragonBall_KeyUp(object sender, KeyEventArgs e)
@@ -426,17 +392,56 @@ namespace DragonBall
             }
         }
 
+        private void StartGame()
+        {
+            this.BackgroundImageLayout = ImageLayout.Stretch;
+            this.DoubleBuffered = true;
+
+            // Lấy hết hình trong thư mục Goku (Nằm ở thư mục debug)
+            playerMovements = Directory.GetFiles("Goku0", "*.png").ToList();
+
+            // Lấy hình thứ 9 trong thư mục Goku
+            player = Image.FromFile(playerMovements[10]);
+        }
         private void EndGame()
         {
-
+            Application.Exit();
+        }
+        private void Transformation(int form, int delayShootTime)
+        {
+            SetNoMove(); // Khóa di chuyển lúc biến hình
+            isTransform = true;
+            slowDownFrameRate = 0;
+            stepFrame = -1;
+            delayShoot = 0;
+            this.form = form;
+            this.delayShootTime = delayShootTime;
         }
         private void SetNoMove()
         {
             isLocked = true;
+            isShot = false;
             goUp = false;
             goDown = false;
             goLeft = false;
             goRight = false;
+        }
+        private void Shooting()
+        {
+            if (delayShoot != delayShootTime) return;
+            delayShoot = 0;
+
+            Bullets a = new Bullets(playerX + playerWidth,
+                                    playerY + playerHeight / 2 + 20,
+                                    bulletWidth,
+                                    bulletHeight,
+                                    true);
+            a.Image = Image.FromFile(playerMovements[9]);
+            bullets.Add(a);
+
+            isShot = true;
+            slowDownFrameRate = 0;
+            stepFrame = 0;
         }
     }
 }
