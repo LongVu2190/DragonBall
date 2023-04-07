@@ -13,6 +13,15 @@ namespace DragonBall
         {
 
         }
+        public Bullets(int x, int y, int width, int height, bool isMoving)
+        {
+            X = x;
+            Y = y;
+            Width = width;
+            Height = height;
+            this.isMoving = isMoving;
+        }
+
         public Image Image { get; set; }
         public int X { get; set; }
         public int Y { get; set; }

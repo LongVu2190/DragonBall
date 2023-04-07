@@ -27,7 +27,7 @@ namespace DragonBall
         int slowDownFrameRate = 0; // Giảm FPS xuống (Di chuyển FPS cao, Hoạt ảnh FPS thấp)
         int maxSlowDownFrameRate = 6;
 
-        int delayShoot = 0; // Thời gian giữa những lần bắn
+        int delayShoot = 0, delayTime = 15; // Thời gian giữa những lần bắn
         int score = 0; // Điểm
 
         bool goLeft, goRight, goUp, goDown;
@@ -36,17 +36,11 @@ namespace DragonBall
         int playerX; // Tọa độ X của player
         int playerY = 0; //Tọa độ Y của player
 
-        int bulletX, bulletY;  
-        int bulletWidth = 50, bulletHeight = 30;
-
         int form = 1; // Dạng của goku
         bool isTransform = false, isShot = false;
 
-        static int playerHeight = 200;
-        static int playerWidth = 200;
-        
-        static int playerSpeed = 10;
-        static int bulletSpeed = 10;
+        static int playerHeight = 200, playerWidth = 200, playerSpeed = 10;
+        static int bulletHeight = 30, bulletWidth = 50, bulletSpeed = 10;
 
         public DragonBall()
         {
@@ -71,7 +65,7 @@ namespace DragonBall
         static extern bool AllocConsole();
         private void Timer_Tick(object sender, EventArgs e)
         {
-            if (delayShoot != 10) // Tăng thời gian giữa những lần bắn
+            if (delayShoot != delayTime) // Tăng thời gian giữa những lần bắn
             {
                 delayShoot++;
             }
@@ -347,6 +341,8 @@ namespace DragonBall
                 slowDownFrameRate = 0;
                 steps = 0;
                 form = 0;
+                delayShoot = 0;
+                delayTime = 15;
             }
             if (e.KeyCode == Keys.D2)
             {
@@ -356,6 +352,8 @@ namespace DragonBall
                 slowDownFrameRate = 0;
                 steps = 0;
                 form = 1;
+                delayShoot = 0;
+                delayTime = 13;
             }
             if (e.KeyCode == Keys.D3)
             {
@@ -365,6 +363,8 @@ namespace DragonBall
                 slowDownFrameRate = 0;
                 steps = 0;
                 form = 2;
+                delayShoot = 0;
+                delayTime = 10;
             }
             if (e.KeyCode == Keys.D4)
             {
@@ -374,6 +374,8 @@ namespace DragonBall
                 slowDownFrameRate = 0;
                 steps = 0;
                 form = 3;
+                delayShoot = 0;
+                delayTime = 8;
             }
             if (e.KeyCode == Keys.D5)
             {
@@ -383,21 +385,19 @@ namespace DragonBall
                 slowDownFrameRate = 0;
                 steps = 0;
                 form = 4;
+                delayShoot = 0;
+                delayTime = 6;
             }
-            if (e.KeyCode == Keys.Space && delayShoot == 10)
+            if (e.KeyCode == Keys.Space && delayShoot == delayTime)
             {
                 delayShoot = 0;
-                bulletX = playerX + playerWidth;
-                bulletY = playerY + playerHeight / 2 + 20;
 
-                Bullets a = new Bullets();
-                a.X = bulletX;
-                a.Y = bulletY;
-                a.Width = bulletWidth;
-                a.Height = bulletHeight;
-                a.Image = Image.FromFile(playerMovements[9]);
-                a.isMoving = true;
-                
+                Bullets a = new Bullets(playerX + playerWidth,
+                                        playerY + playerHeight / 2 + 20,
+                                        bulletWidth,
+                                        bulletHeight,
+                                        true);
+                a.Image = Image.FromFile(playerMovements[9]);               
                 bullets.Add(a);
 
                 isShot = true;
