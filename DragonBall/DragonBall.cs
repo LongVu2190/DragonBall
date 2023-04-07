@@ -31,6 +31,7 @@ namespace DragonBall
         int score = 0; // Điểm
 
         bool goLeft, goRight, goUp, goDown;
+        bool isLocked = false;
 
         int playerX; // Tọa độ X của player
         int playerY = 0; //Tọa độ Y của player
@@ -225,6 +226,7 @@ namespace DragonBall
             {
                 isShot = false;
                 isTransform = false;
+                isLocked = false;
             }
             player = Image.FromFile(playerMovements[steps]);
         }
@@ -319,6 +321,7 @@ namespace DragonBall
         }
         private void DragonBall_KeyDown(object sender, KeyEventArgs e)
         {
+            if (isLocked) return;
             // Nhấn phím thì là true
             if (e.KeyCode == Keys.A)
             {
@@ -338,6 +341,7 @@ namespace DragonBall
             }
             if (e.KeyCode == Keys.D1)
             {
+                SetNoMove(); // Khóa di chuyển và bắn trong lúc biến hình
                 playerMovements = Directory.GetFiles("Goku0", "*.png").ToList();
                 isTransform = true;
                 slowDownFrameRate = 0;
@@ -346,6 +350,7 @@ namespace DragonBall
             }
             if (e.KeyCode == Keys.D2)
             {
+                SetNoMove();
                 playerMovements = Directory.GetFiles("Goku1", "*.png").ToList();
                 isTransform = true;
                 slowDownFrameRate = 0;
@@ -354,6 +359,7 @@ namespace DragonBall
             }
             if (e.KeyCode == Keys.D3)
             {
+                SetNoMove();
                 playerMovements = Directory.GetFiles("Goku2", "*.png").ToList();
                 isTransform = true;
                 slowDownFrameRate = 0;
@@ -362,6 +368,7 @@ namespace DragonBall
             }
             if (e.KeyCode == Keys.D4)
             {
+                SetNoMove();
                 playerMovements = Directory.GetFiles("Goku3", "*.png").ToList();
                 isTransform = true;
                 slowDownFrameRate = 0;
@@ -370,6 +377,7 @@ namespace DragonBall
             }
             if (e.KeyCode == Keys.D5)
             {
+                SetNoMove();
                 playerMovements = Directory.GetFiles("Goku4", "*.png").ToList();
                 isTransform = true;
                 slowDownFrameRate = 0;
@@ -421,6 +429,14 @@ namespace DragonBall
         private void EndGame()
         {
 
+        }
+        private void SetNoMove()
+        {
+            isLocked = true;
+            goUp = false;
+            goDown = false;
+            goLeft = false;
+            goRight = false;
         }
     }
 }
