@@ -126,7 +126,6 @@ namespace DragonBall
             }
 
         }
-
         private void Timer_Tick(object sender, EventArgs e)
         {
             if (delayShoot != delayShootTime) // Tăng thời gian giữa những lần bắn
@@ -141,12 +140,12 @@ namespace DragonBall
 
             if (isTransform)
             {
-                SetStartEndGoku(form, Enums.Move.Right);
+                SetFramePlayer(form, Enums.Move.Right);
                 AnimatePlayer();
             }
             else
             {
-                SetStartEndGoku(form, Enums.Move.Right);
+                SetFramePlayer(form, Enums.Move.Right);
                 AnimatePlayer();
             }
 
@@ -154,7 +153,7 @@ namespace DragonBall
             if (goUp && (playerY - playerSpeed) > 0)
             {
                 playerY -= playerSpeed;
-                SetStartEndGoku(form, Enums.Move.Right);
+                SetFramePlayer(form, Enums.Move.Right);
                 AnimatePlayer();
             }
 
@@ -162,7 +161,7 @@ namespace DragonBall
             if (goDown && (playerY + playerSpeed) < this.ClientSize.Height - playerHeight)
             {
                 playerY += playerSpeed;
-                SetStartEndGoku(form, Enums.Move.Right);
+                SetFramePlayer(form, Enums.Move.Right);
                 AnimatePlayer();
             }
 
@@ -170,7 +169,7 @@ namespace DragonBall
             if (goLeft && (playerX - playerSpeed) > 0)
             {
                 playerX -= playerSpeed;
-                SetStartEndGoku(form, Enums.Move.Left);
+                SetFramePlayer(form, Enums.Move.Left);
                 AnimatePlayer();
             }
 
@@ -178,7 +177,7 @@ namespace DragonBall
             if (goRight && (playerX + playerSpeed) < this.ClientSize.Width - playerWidth)
             {
                 playerX += playerSpeed;
-                SetStartEndGoku(form, Enums.Move.Right);
+                SetFramePlayer(form, Enums.Move.Right);
                 AnimatePlayer();
             }
 
@@ -225,7 +224,7 @@ namespace DragonBall
         }
 
         // Để lựa chọn ảnh nhân vật sẽ được vẽ lên
-        private void SetStartEndGoku(int form, Enums.Move status)
+        private void SetFramePlayer(int form, Enums.Move status)
         {
             if (isShot)
             {
@@ -314,10 +313,6 @@ namespace DragonBall
         }
         private void DragonBall_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.G)
-            {
-                isStart = true;
-            }
             if (e.KeyCode == Keys.H)
             {
                 isEnd = true;
@@ -341,31 +336,6 @@ namespace DragonBall
             {
                 goDown = true;
             }
-            //if (e.KeyCode == Keys.D1)
-            //{
-            //    playerMovements = Directory.GetFiles("Goku0", "*.png").ToList();
-            //    Transformation(0, 15);
-            //}
-            //if (e.KeyCode == Keys.D2)
-            //{
-            //    playerMovements = Directory.GetFiles("Goku1", "*.png").ToList();
-            //    Transformation(1, 13);
-            //}
-            //if (e.KeyCode == Keys.D3)
-            //{
-            //    playerMovements = Directory.GetFiles("Goku2", "*.png").ToList();
-            //    Transformation(2, 10);
-            //}
-            //if (e.KeyCode == Keys.D4)
-            //{
-            //    playerMovements = Directory.GetFiles("Goku3", "*.png").ToList();
-            //    Transformation(3, 8);
-            //}
-            //if (e.KeyCode == Keys.D5)
-            //{
-            //    playerMovements = Directory.GetFiles("Goku4", "*.png").ToList();
-            //    Transformation(4, 6);
-            //}
             if (e.KeyCode == Keys.Space && !isTransform)
             {
                 Shooting();
@@ -400,8 +370,10 @@ namespace DragonBall
             // Lấy hết hình trong thư mục Goku (Nằm ở thư mục debug)
             playerMovements = Directory.GetFiles("Goku0", "*.png").ToList();
 
-            // Lấy hình thứ 9 trong thư mục Goku
+            // Lấy hình thứ 10 trong thư mục Goku
             player = Image.FromFile(playerMovements[10]);
+
+            isStart = true;
         }
         private void EndGame()
         {
