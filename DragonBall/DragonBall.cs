@@ -40,7 +40,7 @@ namespace DragonBall
         bool isTransform = false, isShot = false;
 
         static int playerHeight = 200, playerWidth = 200, playerSpeed = 10;
-        static int bulletHeight = 30, bulletWidth = 50, bulletSpeed = 10;
+        static int bulletSpeed = 10;
 
         public DragonBall()
         {
@@ -409,8 +409,6 @@ namespace DragonBall
 
             Bullets a = new Bullets(playerX + playerWidth,
                                     playerY + playerHeight / 2 + 20,
-                                    bulletWidth,
-                                    bulletHeight,
                                     true);
             a.Image = Image.FromFile(playerMovements[9]);
             bullets.Add(a);
