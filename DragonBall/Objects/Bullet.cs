@@ -28,5 +28,6 @@ namespace Objects.DragonBall
         public int Height { get; set; } = 30;
         public bool isMoving { get; set; } = false;
         public bool isHit { get; set; } = false;
+        public int speed { get; set; } = 10;
     }
 }

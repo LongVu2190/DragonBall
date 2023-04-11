@@ -16,30 +16,21 @@ namespace DragonBall
         Player player = new Player();
         List<Bullet> bullets = new List<Bullet>();
 
-        bool isStart, isEnd;
-
         List<Bullet> bulletsToRemove = new List<Bullet>();
-        private List<PictureBox> enemies = new List<PictureBox>();
+        List<PictureBox> enemies = new List<PictureBox>();
 
-        
-
-        int stepFrame; // Index để thay đổi hình
-        int startFrame, endFrame; // Khoảng hình để làm animation
-        int slowDownFrameRate; // Giảm FPS xuống (Di chuyển FPS cao, Hoạt ảnh FPS thấp)
-        int maxSlowDownFrameRate; // Giảm FPS xuống 6 lần
+        bool isStart, isEnd, isLocked;
+        int stepFrame, startFrame, endFrame, slowDownFrameRate, maxSlowDownFrameRate;
 
         int delayShoot, delayShootTime; // Thời gian giữa những lần bắn
         int score; // Điểm
 
         bool goLeft, goRight, goUp, goDown;
-        bool isLocked; // Khóa di chuyển và bắn
 
         int playerX; // Tọa độ X của player
         int playerY; //Tọa độ Y của player
 
         bool isTransform, isShot;
-
-        static int bulletSpeed = 10;
 
         public DragonBall()
         {
@@ -245,7 +236,7 @@ namespace DragonBall
             {
                 if (bullets[i].X + bullets[i].Width < this.ClientSize.Width) // Bay trong màn hình
                 {
-                    bullets[i].X += bulletSpeed;
+                    bullets[i].X += bullets[i].speed;
                     bullets[i].isMoving = true;
                 }
                 else // Bay hết màn hình thì loại nó ra khỏi list bullets

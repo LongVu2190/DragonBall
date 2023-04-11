@@ -11,13 +11,15 @@ namespace DragonBall.Objects
     {       
         public Player() { }
 
-        public int Height = 200, Width = 200, Speed = 10;
+        public int Height { get; set; } = 200;
+        public int Width { get; set; } = 200;
+        public int Speed { get; set; } = 10;
 
-        public Image Image;
+        public Image Image { get; set; } 
 
         public List<string> imageMovements = new List<string>();
 
-        public int form;
+        public int form { get; set; }
         
     }
 }
