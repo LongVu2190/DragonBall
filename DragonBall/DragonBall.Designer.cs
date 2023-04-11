@@ -30,10 +30,9 @@
         {
             this.components = new System.ComponentModel.Container();
             this.Timer = new System.Windows.Forms.Timer(this.components);
-            this.test = new System.Windows.Forms.PictureBox();
             this.score_lb = new System.Windows.Forms.Label();
             this.Level = new System.Windows.Forms.Timer(this.components);
-            ((System.ComponentModel.ISupportInitialize)(this.test)).BeginInit();
+            this.Enemy = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // Timer
@@ -41,14 +40,6 @@
             this.Timer.Enabled = true;
             this.Timer.Interval = 10;
             this.Timer.Tick += new System.EventHandler(this.Timer_Tick);
-            // 
-            // test
-            // 
-            this.test.Location = new System.Drawing.Point(898, 237);
-            this.test.Name = "test";
-            this.test.Size = new System.Drawing.Size(100, 144);
-            this.test.TabIndex = 0;
-            this.test.TabStop = false;
             // 
             // score_lb
             // 
@@ -66,6 +57,10 @@
             this.Level.Interval = 20;
             this.Level.Tick += new System.EventHandler(this.Level_Tick);
             // 
+            // Enemy
+            // 
+            this.Enemy.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
             // DragonBall
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -74,14 +69,13 @@
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1148, 637);
             this.Controls.Add(this.score_lb);
-            this.Controls.Add(this.test);
             this.Name = "DragonBall";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Dragon Ball";
+            this.Load += new System.EventHandler(this.DragonBall_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.DragonBall_Paint);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.DragonBall_KeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.DragonBall_KeyUp);
-            ((System.ComponentModel.ISupportInitialize)(this.test)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -90,9 +84,9 @@
         #endregion
 
         private System.Windows.Forms.Timer Timer;
-        private System.Windows.Forms.PictureBox test;
         private System.Windows.Forms.Label score_lb;
         private System.Windows.Forms.Timer Level;
+        private System.Windows.Forms.Timer Enemy;
     }
 }
 

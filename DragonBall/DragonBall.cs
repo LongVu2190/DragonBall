@@ -18,6 +18,8 @@ namespace DragonBall
     {
         bool isStart, isEnd;
         List<Bullets> bullets = new List<Bullets>(); // List chứa đạn
+        List<Bullets> bulletsToRemove = new List<Bullets>();
+        private List<PictureBox> enemies = new List<PictureBox>();
         Image player;
 
         List<string> playerMovements = new List<string>(); // List này chứa các hình chuyển động
@@ -57,28 +59,25 @@ namespace DragonBall
         {
             isStart = false;
             isEnd = false;
-            List<Bullets> bullets = new List<Bullets>(); // List chứa đạn
-            Image player;
+            List<Bullets> bullets = new List<Bullets>();
 
-            List<string> playerMovements = new List<string>(); // List này chứa các hình chuyển động
-
-            stepFrame = 0; // Index để thay đổi hình
-            slowDownFrameRate = 0; // Giảm FPS xuống (Di chuyển FPS cao, Hoạt ảnh FPS thấp)
-            maxSlowDownFrameRate = 6; // Giảm FPS xuống 6 lần
+            List<string> playerMovements = new List<string>(); 
+            stepFrame = 0;
+            slowDownFrameRate = 0;
+            maxSlowDownFrameRate = 6;
 
             delayShoot = 0;
-            delayShootTime = 15; // Thời gian giữa những lần bắn
+            delayShootTime = 15;
             score = 0; // Điểm
+            isLocked = false;
 
-            bool goLeft, goRight, goUp, goDown;
-            bool isLocked = false; // Khóa di chuyển và bắn
+            playerY = 0;
 
-            playerY = 0; //Tọa độ Y của player
-
-            form = 1; // Dạng của goku
+            form = 1;
             isTransform = false;
             isShot = false;
         }
+
         private void DragonBall_Paint(object sender, PaintEventArgs e)
         {
             if (!isStart) return;
@@ -104,16 +103,43 @@ namespace DragonBall
                     PictureBox hit = new PictureBox();
                     hit.Location = new System.Drawing.Point(bullet.X, bullet.Y);
                     hit.Size = new System.Drawing.Size(bullet.Width, bullet.Height);
-
-                    if (hit.Bounds.IntersectsWith(test.Bounds) && !bullet.isHit)
+                    for (int i = 0; i < enemies.Count(); i++)
                     {
-                        bullet.isHit = true;
-                        score += 1;
-                        score_lb.Text = score.ToString();
+                        if (hit.Bounds.IntersectsWith(enemies[i].Bounds) && !bullet.isHit)
+                        {
+                            bullet.isHit = true;
+                            score += 1;
+                            score_lb.Text = score.ToString();
+                            enemies[i].Hide();
+                            enemies.RemoveAt(i);
+                            bulletsToRemove.Add(bullet);
+                        }
                     }
 
                 }
             }
+            foreach (var enemy in enemies)
+            {
+                Canvas.FillRectangle(new SolidBrush(enemy.BackColor), enemy.Location.X, enemy.Location.Y, enemy.Size.Width, enemy.Size.Height);
+            }
+            foreach (var bulletToRemove in bulletsToRemove)
+            {
+                bullets.Remove(bulletToRemove);
+            }
+
+        }
+
+        private void CreateEnemy()
+        {
+            Random rnd = new Random();
+            int x = this.Width + 50;
+            int y = rnd.Next(0, this.Height - 50);
+            PictureBox enemy = new PictureBox();
+            enemy.Size = new Size(50, 50); // replace enemyWidth and enemyHeight with the actual size of the enemy
+            enemy.Location = new Point(x, y);
+            enemy.BackColor = Color.Red; // replace Color.Red with the desired color of the enemy
+            enemies.Add(enemy);
+
         }
 
         // Nếu đủ score thì biến hình lên cấp
@@ -225,11 +251,38 @@ namespace DragonBall
                 }
                 else // Bay hết màn hình thì loại nó ra khỏi list bullets
                 {
-                    bullets.RemoveAt(i);
-                    i--;
+                    if (bullets[i].isHit) // Xóa bullets được bắn
+                    {
+                        bullets.RemoveAt(i);
+                        i--;
+                    }
+                    else
+                    {
+                        bullets[i].isMoving = false;
+                    }
+                }
+            }
+
+        }
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            CreateEnemy();
+            for (int i = 0; i < enemies.Count(); i++)
+            {
+
+                enemies[i].Left -= 5;
+                if (enemies[i].Left + 50 < 0)
+                {
+                    enemies[i].Visible = false;
+                    Enemy.Enabled = false;
                 }
             }
         }
+
+        private void DragonBall_Load(object sender, EventArgs e)
+        {
+        }
+
         private void AnimatePlayer()
         {
             slowDownFrameRate += 1;
@@ -404,11 +457,13 @@ namespace DragonBall
 
             Timer.Enabled = true;
             Level.Enabled = true;
+            Enemy.Enabled = true;
         }
         private void EndGame()
         {
             Timer.Enabled = false;
             Level.Enabled = false;
+            score = 0;
             MessageBox.Show("You win", "Notification");
             EndGame end = new EndGame(this);
             end.ShowDialog();
