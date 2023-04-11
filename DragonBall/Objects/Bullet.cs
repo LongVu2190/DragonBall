@@ -5,15 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DragonBall
+
+namespace Objects.DragonBall
 {
-    public class Bullets
+    public class Bullet
     {
-        public Bullets()
+        public Bullet()
         {
 
         }
-        public Bullets(int x, int y, bool isMoving)
+        public Bullet(int x, int y, bool isMoving)
         {
             X = x;
             Y = y;

@@ -1,28 +1,27 @@
 ﻿using DragonBall.Enums;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using Objects.DragonBall;
+using DragonBall.Objects;
 
 namespace DragonBall
 {
     public partial class DragonBall : Form
     {
-        bool isStart, isEnd;
-        List<Bullets> bullets = new List<Bullets>(); // List chứa đạn
-        List<Bullets> bulletsToRemove = new List<Bullets>();
-        private List<PictureBox> enemies = new List<PictureBox>();
-        Image player;
+        Player player = new Player();
+        List<Bullet> bullets = new List<Bullet>();
 
-        List<string> playerMovements = new List<string>(); // List này chứa các hình chuyển động
+        bool isStart, isEnd;
+
+        List<Bullet> bulletsToRemove = new List<Bullet>();
+        private List<PictureBox> enemies = new List<PictureBox>();
+
+        
 
         int stepFrame; // Index để thay đổi hình
         int startFrame, endFrame; // Khoảng hình để làm animation
@@ -38,15 +37,17 @@ namespace DragonBall
         int playerX; // Tọa độ X của player
         int playerY; //Tọa độ Y của player
 
-        int form; // Dạng của goku
         bool isTransform, isShot;
 
-        static int playerHeight = 200, playerWidth = 200, playerSpeed = 10;
         static int bulletSpeed = 10;
 
         public DragonBall()
         {
             InitializeComponent();
+        }
+
+        private void DragonBall_Load(object sender, EventArgs e)
+        {
             AllocConsole();
             StartGame();
         }
@@ -59,9 +60,7 @@ namespace DragonBall
         {
             isStart = false;
             isEnd = false;
-            List<Bullets> bullets = new List<Bullets>();
 
-            List<string> playerMovements = new List<string>(); 
             stepFrame = 0;
             slowDownFrameRate = 0;
             maxSlowDownFrameRate = 6;
@@ -73,7 +72,7 @@ namespace DragonBall
 
             playerY = 0;
 
-            form = 1;
+            player.form = 1;
             isTransform = false;
             isShot = false;
         }
@@ -87,7 +86,7 @@ namespace DragonBall
             }
             // Vẽ nhân vật
             Graphics Canvas = e.Graphics;
-            Canvas.DrawImage(player, playerX, playerY, playerWidth, playerHeight);
+            Canvas.DrawImage(player.Image, playerX, playerY, player.Width, player.Height);
 
 
             if (bullets == null) return;
@@ -150,31 +149,31 @@ namespace DragonBall
 
             if (score == 0)
             {
-                playerMovements = Directory.GetFiles("Goku0", "*.png").ToList();
+                player.imageMovements = Directory.GetFiles("Goku0", "*.png").ToList();
                 Transformation(0, 15);
                 score++;
             }
             else if (score == 10)
             {
-                playerMovements = Directory.GetFiles("Goku1", "*.png").ToList();
+                player.imageMovements = Directory.GetFiles("Goku1", "*.png").ToList();
                 Transformation(1, 13);
                 score++;
             }
             else if (score == 20)
             {
-                playerMovements = Directory.GetFiles("Goku2", "*.png").ToList();
+                player.imageMovements = Directory.GetFiles("Goku2", "*.png").ToList();
                 Transformation(2, 10);
                 score++;
             }
             else if (score == 30)
             {
-                playerMovements = Directory.GetFiles("Goku3", "*.png").ToList();
+                player.imageMovements = Directory.GetFiles("Goku3", "*.png").ToList();
                 Transformation(3, 8);
                 score++;
             }
             else if (score == 40)
             {
-                playerMovements = Directory.GetFiles("Goku4", "*.png").ToList();
+                player.imageMovements = Directory.GetFiles("Goku4", "*.png").ToList();
                 Transformation(4, 6);
                 score++;
             }
@@ -194,44 +193,44 @@ namespace DragonBall
 
             if (isTransform)
             {
-                SetFramePlayer(form, Enums.Move.Right);
+                SetFramePlayer(player.form, Enums.Move.Right);
                 AnimatePlayer();
             }
             else if (!goLeft)
             {
-                SetFramePlayer(form, Enums.Move.Right);
+                SetFramePlayer(player.form, Enums.Move.Right);
                 AnimatePlayer();
             }
 
             // Di chuyển lên
-            if (goUp && (playerY - playerSpeed) > 0)
+            if (goUp && (playerY - player.Speed) > 0)
             {
-                playerY -= playerSpeed;
-                SetFramePlayer(form, Enums.Move.Right);
+                playerY -= player.Speed;
+                SetFramePlayer(player.form, Enums.Move.Right);
                 AnimatePlayer();
             }
 
             // Di chuyển xuống
-            if (goDown && (playerY + playerSpeed) < this.ClientSize.Height - playerHeight)
+            if (goDown && (playerY + player.Speed) < this.ClientSize.Height - player.Height)
             {
-                playerY += playerSpeed;
-                SetFramePlayer(form, Enums.Move.Right);
+                playerY += player.Speed;
+                SetFramePlayer(player.form, Enums.Move.Right);
                 AnimatePlayer();
             }
 
             // Di chuyển trái
-            if (goLeft && (playerX - playerSpeed) > 0)
+            if (goLeft && (playerX - player.Speed) > 0)
             {
-                playerX -= playerSpeed;
-                SetFramePlayer(form, Enums.Move.Left);
+                playerX -= player.Speed;
+                SetFramePlayer(player.form, Enums.Move.Left);
                 AnimatePlayer();
             }
 
             // Di chuyển phải
-            if (goRight && (playerX + playerSpeed) < this.ClientSize.Width - playerWidth)
+            if (goRight && (playerX + player.Speed) < this.ClientSize.Width - player.Width)
             {
-                playerX += playerSpeed;
-                SetFramePlayer(form, Enums.Move.Right);
+                playerX += player.Speed;
+                SetFramePlayer(player.form, Enums.Move.Right);
                 AnimatePlayer();
             }
 
@@ -279,10 +278,6 @@ namespace DragonBall
             }
         }
 
-        private void DragonBall_Load(object sender, EventArgs e)
-        {
-        }
-
         private void AnimatePlayer()
         {
             slowDownFrameRate += 1;
@@ -301,7 +296,7 @@ namespace DragonBall
                 isTransform = false;
                 isLocked = false;
             }
-            player = Image.FromFile(playerMovements[stepFrame]);
+            player.Image = Image.FromFile(player.imageMovements[stepFrame]);
         }
 
         // Để lựa chọn ảnh nhân vật sẽ được vẽ lên
@@ -312,81 +307,81 @@ namespace DragonBall
                 startFrame = 6;
                 endFrame = 8;
             }
-            else if (form == 0 && isTransform)
+            else if (player.form == 0 && isTransform)
             {
                 startFrame = 10;
                 endFrame = 16;
             }
-            else if (form == 0 && status == Enums.Move.Right)
+            else if (player.form == 0 && status == Enums.Move.Right)
             {
                 startFrame = 0;
                 endFrame = 2;
             }
-            else if (form == 0 && status == Enums.Move.Left)
+            else if (player.form == 0 && status == Enums.Move.Left)
             {
                 startFrame = 3;
                 endFrame = 5;
             }
 
-            else if (form == 1 && isTransform)
+            else if (player.form == 1 && isTransform)
             {
                 startFrame = 10;
                 endFrame = 17;
             }
-            else if (form == 1 && status == Enums.Move.Right)
+            else if (player.form == 1 && status == Enums.Move.Right)
             {
                 startFrame = 0;
                 endFrame = 2;
             }
-            else if (form == 1 && status == Enums.Move.Left)
+            else if (player.form == 1 && status == Enums.Move.Left)
             {
                 startFrame = 3;
                 endFrame = 5;
             }
 
-            else if (form == 2 && isTransform)
+            else if (player.form == 2 && isTransform)
             {
                 startFrame = 10;
                 endFrame = 20;
             }
-            else if (form == 2 && status == Enums.Move.Right)
+            else if (player.form == 2 && status == Enums.Move.Right)
             {
                 startFrame = 0;
                 endFrame = 2;
             }
-            else if (form == 2 && status == Enums.Move.Left)
+            else if (player.form == 2 && status == Enums.Move.Left)
             {
                 startFrame = 3;
                 endFrame = 5;
             }
 
-            else if (form == 3 && isTransform)
+            else if (player.form == 3 && isTransform)
             {
                 startFrame = 10;
                 endFrame = 27;
             }
-            else if (form == 3 && status == Enums.Move.Right)
+            else if (player.form == 3 && status == Enums.Move.Right)
             {
                 startFrame = 0;
                 endFrame = 2;
             }
-            else if (form == 3 && status == Enums.Move.Left)
+            else if (player.form == 3 && status == Enums.Move.Left)
             {
                 startFrame = 3;
                 endFrame = 5;
             }
 
-            else if (form == 4 && isTransform)
+            else if (player.form == 4 && isTransform)
             {
                 startFrame = 10;
                 endFrame = 22;
             }
-            else if (form == 4 && status == Enums.Move.Right)
+            else if (player.form == 4 && status == Enums.Move.Right)
             {
                 startFrame = 0;
                 endFrame = 2;
             }
-            else if (form == 4 && status == Enums.Move.Left)
+            else if (player.form == 4 && status == Enums.Move.Left)
             {
                 startFrame = 3;
                 endFrame = 5;
@@ -448,10 +443,10 @@ namespace DragonBall
             this.DoubleBuffered = true;
 
             // Lấy hết hình trong thư mục Goku (Nằm ở thư mục debug)
-            playerMovements = Directory.GetFiles("Goku0", "*.png").ToList();
+            player.imageMovements = Directory.GetFiles("Goku0", "*.png").ToList();
 
             // Lấy hình thứ 10 trong thư mục Goku
-            player = Image.FromFile(playerMovements[10]);
+            player.Image = Image.FromFile(player.imageMovements[10]);
 
             isStart = true;
 
@@ -475,7 +470,7 @@ namespace DragonBall
             slowDownFrameRate = 0;
             stepFrame = -1;
             delayShoot = 0;
-            this.form = form;
+            player.form = form;
             this.delayShootTime = delayShootTime;
         }
         private void SetNoMove()
@@ -493,11 +488,11 @@ namespace DragonBall
 
             delayShoot = 0;
 
-            Bullets a = new Bullets(playerX + playerWidth,
-                                    playerY + playerHeight / 2 + 20,
+            Bullet a = new Bullet(playerX + player.Width,
+                                    playerY + player.Height / 2 + 20,
                                     true);
 
-            a.Image = Image.FromFile(playerMovements[9]); // Hình đạn
+            a.Image = Image.FromFile(player.imageMovements[9]); // Hình đạn
             bullets.Add(a);
 
             isShot = true;
