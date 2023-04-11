@@ -44,7 +44,7 @@
             // 
             // test
             // 
-            this.test.Location = new System.Drawing.Point(710, 145);
+            this.test.Location = new System.Drawing.Point(898, 237);
             this.test.Name = "test";
             this.test.Size = new System.Drawing.Size(100, 144);
             this.test.TabIndex = 0;
@@ -54,11 +54,11 @@
             // 
             this.score_lb.AutoSize = true;
             this.score_lb.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.score_lb.Location = new System.Drawing.Point(309, 65);
+            this.score_lb.Location = new System.Drawing.Point(529, 66);
             this.score_lb.Name = "score_lb";
-            this.score_lb.Size = new System.Drawing.Size(70, 25);
+            this.score_lb.Size = new System.Drawing.Size(61, 25);
             this.score_lb.TabIndex = 1;
-            this.score_lb.Text = "label1";
+            this.score_lb.Text = "Point";
             // 
             // Level
             // 
@@ -72,7 +72,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::DragonBall.Properties.Resources._1940_7864_6519v2;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(884, 461);
+            this.ClientSize = new System.Drawing.Size(1148, 637);
             this.Controls.Add(this.score_lb);
             this.Controls.Add(this.test);
             this.Name = "DragonBall";

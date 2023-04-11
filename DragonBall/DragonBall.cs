@@ -16,28 +16,28 @@ namespace DragonBall
 {
     public partial class DragonBall : Form
     {
-        bool isStart = false, isEnd = false;
+        bool isStart, isEnd;
         List<Bullets> bullets = new List<Bullets>(); // List chứa đạn
         Image player;
 
         List<string> playerMovements = new List<string>(); // List này chứa các hình chuyển động
 
-        int stepFrame = 0; // Index để thay đổi hình
+        int stepFrame; // Index để thay đổi hình
         int startFrame, endFrame; // Khoảng hình để làm animation
-        int slowDownFrameRate = 0; // Giảm FPS xuống (Di chuyển FPS cao, Hoạt ảnh FPS thấp)
-        int maxSlowDownFrameRate = 6; // Giảm FPS xuống 6 lần
+        int slowDownFrameRate; // Giảm FPS xuống (Di chuyển FPS cao, Hoạt ảnh FPS thấp)
+        int maxSlowDownFrameRate; // Giảm FPS xuống 6 lần
 
-        int delayShoot = 0, delayShootTime = 15; // Thời gian giữa những lần bắn
-        int score = 0; // Điểm
+        int delayShoot, delayShootTime; // Thời gian giữa những lần bắn
+        int score; // Điểm
 
         bool goLeft, goRight, goUp, goDown;
-        bool isLocked = false; // Khóa di chuyển và bắn
+        bool isLocked; // Khóa di chuyển và bắn
 
         int playerX; // Tọa độ X của player
-        int playerY = 0; //Tọa độ Y của player
+        int playerY; //Tọa độ Y của player
 
-        int form = 1; // Dạng của goku
-        bool isTransform = false, isShot = false;
+        int form; // Dạng của goku
+        bool isTransform, isShot;
 
         static int playerHeight = 200, playerWidth = 200, playerSpeed = 10;
         static int bulletSpeed = 10;
@@ -52,6 +52,33 @@ namespace DragonBall
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool AllocConsole();
+
+        private void InitValue()
+        {
+            isStart = false;
+            isEnd = false;
+            List<Bullets> bullets = new List<Bullets>(); // List chứa đạn
+            Image player;
+
+            List<string> playerMovements = new List<string>(); // List này chứa các hình chuyển động
+
+            stepFrame = 0; // Index để thay đổi hình
+            slowDownFrameRate = 0; // Giảm FPS xuống (Di chuyển FPS cao, Hoạt ảnh FPS thấp)
+            maxSlowDownFrameRate = 6; // Giảm FPS xuống 6 lần
+
+            delayShoot = 0;
+            delayShootTime = 15; // Thời gian giữa những lần bắn
+            score = 0; // Điểm
+
+            bool goLeft, goRight, goUp, goDown;
+            bool isLocked = false; // Khóa di chuyển và bắn
+
+            playerY = 0; //Tọa độ Y của player
+
+            form = 1; // Dạng của goku
+            isTransform = false;
+            isShot = false;
+        }
         private void DragonBall_Paint(object sender, PaintEventArgs e)
         {
             if (!isStart) return;
@@ -144,7 +171,7 @@ namespace DragonBall
                 SetFramePlayer(form, Enums.Move.Right);
                 AnimatePlayer();
             }
-            else
+            else if (!goLeft)
             {
                 SetFramePlayer(form, Enums.Move.Right);
                 AnimatePlayer();
@@ -314,13 +341,8 @@ namespace DragonBall
         }
         private void DragonBall_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.H)
-            {
-                isEnd = true;
-            }
-
             if (isLocked || !isStart) return;
-            // Nhấn phím thì là true
+
             if (e.KeyCode == Keys.A)
             {
                 goLeft = true;
@@ -341,10 +363,13 @@ namespace DragonBall
             {
                 Shooting();
             }
+            if (e.KeyCode == Keys.E && !isTransform)
+            {
+                EndGame();
+            }
         }
         private void DragonBall_KeyUp(object sender, KeyEventArgs e)
         {
-            // Thả phím thì là false
             if (e.KeyCode == Keys.A)
             {
                 goLeft = false;
@@ -363,8 +388,9 @@ namespace DragonBall
             }
         }
 
-        private void StartGame()
+        public void StartGame()
         {
+            InitValue();
             this.BackgroundImageLayout = ImageLayout.Stretch;
             this.DoubleBuffered = true;
 
@@ -375,13 +401,17 @@ namespace DragonBall
             player = Image.FromFile(playerMovements[10]);
 
             isStart = true;
+
+            Timer.Enabled = true;
+            Level.Enabled = true;
         }
         private void EndGame()
         {
             Timer.Enabled = false;
             Level.Enabled = false;
             MessageBox.Show("You win", "Notification");
-            Application.Exit();
+            EndGame end = new EndGame(this);
+            end.ShowDialog();
         }
         private void Transformation(int form, int delayShootTime)
         {
@@ -404,13 +434,15 @@ namespace DragonBall
         }
         private void Shooting()
         {
-            if (delayShoot != delayShootTime) return;
+            if (delayShoot != delayShootTime) return; // Tăng thời gian giữa những lần bắn
+
             delayShoot = 0;
 
             Bullets a = new Bullets(playerX + playerWidth,
                                     playerY + playerHeight / 2 + 20,
                                     true);
-            a.Image = Image.FromFile(playerMovements[9]);
+
+            a.Image = Image.FromFile(playerMovements[9]); // Hình đạn
             bullets.Add(a);
 
             isShot = true;
