@@ -50,7 +50,6 @@ namespace DragonBall
             bullets = new List<C_Bullet>();
             bulletsToRemove = new List<C_Bullet>();
 
-            isStart = false;
             isEnd = false;
 
             delayShoot = 0;
@@ -168,10 +167,13 @@ namespace DragonBall
         // Nếu đủ score thì biến hình lên cấp
         private void Level_Tick(object sender, EventArgs e)
         {
-            if (score == 30) isEnd = true;
-            if (player.Health == 0) isEnd = true;
+            if (isEnd || !isStart) return;
 
-            if (!isStart) return;
+            if (player.Health == 0 || score == 30)
+            { 
+                isEnd = true;
+                EndGame();
+            }
 
             if (score == 0)
             {
@@ -202,7 +204,7 @@ namespace DragonBall
         }
         private void Moving_Tick(object sender, EventArgs e)
         {
-            if (player == null) return;
+            if (isEnd || !isStart) return;
 
             if (delayShoot != player.delayShootTime) // Tăng thời gian giữa những lần bắn
             {
@@ -264,9 +266,7 @@ namespace DragonBall
         }
         private void Enemy_Tick(object sender, EventArgs e)
         {
-            if (isTransform) return;
-
-            if (player == null) return;
+            if (isTransform || isEnd || !isStart)  return;
 
             enemy.X -= player.Speed;
 
