@@ -24,7 +24,6 @@ namespace DragonBall.Objects
         public int form { get; set; }
         public Image Image { get; set; }
         public List<string> imageMovements { get; set; }
-
         ~A_Object() { }
     }
 }

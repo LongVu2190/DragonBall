@@ -11,7 +11,8 @@ using DragonBall.Enums;
 namespace DragonBall.Objects
 {
     internal class C_Player : A_Object
-    {       
+    {
+        public int delayShootTime { get; set; }
         public C_Player() 
         {
             Height = 200;
@@ -27,9 +28,6 @@ namespace DragonBall.Objects
             imageMovements = Directory.GetFiles("assets/player0", "*.png").ToList();
             Image = Image.FromFile(imageMovements[10]);
         }
-
-        public int delayShootTime { get; set; }
-
 
         public void SetFrame(bool isShot, bool isTransform, Move status)
         {
