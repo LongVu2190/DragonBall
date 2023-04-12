@@ -29,17 +29,17 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.Timer = new System.Windows.Forms.Timer(this.components);
+            this.Moving = new System.Windows.Forms.Timer(this.components);
             this.score_lb = new System.Windows.Forms.Label();
             this.Level = new System.Windows.Forms.Timer(this.components);
             this.Enemy = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
-            // Timer
+            // Moving
             // 
-            this.Timer.Enabled = true;
-            this.Timer.Interval = 10;
-            this.Timer.Tick += new System.EventHandler(this.Timer_Tick);
+            this.Moving.Enabled = true;
+            this.Moving.Interval = 10;
+            this.Moving.Tick += new System.EventHandler(this.Moving_Tick);
             // 
             // score_lb
             // 
@@ -85,7 +85,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Timer Timer;
+        private System.Windows.Forms.Timer Moving;
         private System.Windows.Forms.Label score_lb;
         private System.Windows.Forms.Timer Level;
         private System.Windows.Forms.Timer Enemy;

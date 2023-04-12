@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,10 +15,12 @@ namespace DragonBall.Objects
             Height = 200;
             Width = 200;
             Speed = 10;
-            form = 1;
+            form = 0;
             stepFrame = 0;
             slowDownFPS = 0;
             maxSlowDownFPS = 3;
+            imageMovements = Directory.GetFiles("assets/enemy0", "*.png").ToList();
+            Image = Image.FromFile(imageMovements[0]);
         }
         
         public int Height { get; set; }
@@ -38,9 +41,22 @@ namespace DragonBall.Objects
         {
             if (form == 1)
             {
-                startFrame = 0;
-                endFrame = 2;
+                imageMovements = Directory.GetFiles("assets/enemy1", "*.png").ToList();
             }
+            else if (form == 2)
+            {
+                imageMovements = Directory.GetFiles("assets/enemy2", "*.png").ToList();
+            }
+            else if (form == 3)
+            {
+                imageMovements = Directory.GetFiles("assets/enemy3", "*.png").ToList();
+            }
+            else if (form == 4)
+            {
+                imageMovements = Directory.GetFiles("assets/enemy4", "*.png").ToList();
+            }
+            startFrame = 0;
+            endFrame = 2;
         }
         ~Enemy() { }
     }

@@ -123,37 +123,32 @@ namespace DragonBall
 
             if (score == 0)
             {
-                player.imageMovements = Directory.GetFiles("assets/player0", "*.png").ToList();
-                Transformation(0, 15);
+                Transformation(0, 15);               
                 score++;
             }
             else if (score == 10)
             {
-                player.imageMovements = Directory.GetFiles("assets/player1", "*.png").ToList();
                 Transformation(1, 13);
                 score++;
             }
             else if (score == 20)
             {
-                player.imageMovements = Directory.GetFiles("assets/player2", "*.png").ToList();
                 Transformation(2, 10);
                 score++;
             }
             else if (score == 30)
             {
-                player.imageMovements = Directory.GetFiles("assets/player3", "*.png").ToList();
                 Transformation(3, 8);
                 score++;
             }
             else if (score == 40)
             {
-                player.imageMovements = Directory.GetFiles("assets/player4", "*.png").ToList();
                 Transformation(4, 6);
                 score++;
             }
 
         }
-        private void Timer_Tick(object sender, EventArgs e)
+        private void Moving_Tick(object sender, EventArgs e)
         {
             if (player == null) return;
 
@@ -195,9 +190,12 @@ namespace DragonBall
             }
 
             // Di chuyển trái
-            if (goLeft && (player.X - player.Speed) > 0)
+            if (goLeft)
             {
-                player.X -= player.Speed;
+                if (player.X - player.Speed > 0)
+                {
+                    player.X -= player.Speed;
+                }
                 player.SetFrame(isShot, isTransform, Enums.Move.Left);
                 AnimatePlayer();
             }
@@ -214,6 +212,8 @@ namespace DragonBall
         }
         private void Enemy_Tick(object sender, EventArgs e)
         {
+            if (isTransform) return;
+
             if (player == null) return;
 
             enemy.X -= player.Speed;
@@ -281,7 +281,6 @@ namespace DragonBall
             if (enemy == null) return;
 
             enemy.slowDownFPS += 1;
-            Console.WriteLine("SlowDownFPS: " + enemy.slowDownFPS);
 
             if (enemy.slowDownFPS == enemy.maxSlowDownFPS)
             {
@@ -295,7 +294,6 @@ namespace DragonBall
                 enemy.slowDownFPS = 0;
             }
 
-            Console.WriteLine("Enemystep: " + enemy.stepFrame);
             if (enemy.stepFrame > enemy.endFrame || enemy.stepFrame < enemy.startFrame)
             {
                 enemy.stepFrame = enemy.startFrame;
@@ -305,12 +303,12 @@ namespace DragonBall
         }
         private void CreateEnemy()
         {
-            enemy.imageMovements = Directory.GetFiles("assets/enemy0", "*.png").ToList();
-            enemy.Image = Image.FromFile(enemy.imageMovements[0]);
-
+            enemy.form = player.form;
+            enemy.SetFrame();
             enemy.X = this.Width + 50;
             enemy.Y = new Random().Next(0, this.Height - 250);
         }
+
 
         private void DragonBall_KeyDown(object sender, KeyEventArgs e)
         {
@@ -375,13 +373,13 @@ namespace DragonBall
 
             isStart = true;
 
-            Timer.Enabled = true;
+            Moving.Enabled = true;
             Level.Enabled = true;
             Enemy.Enabled = true;
         }
         private void EndGame()
         {
-            Timer.Enabled = false;
+            Moving.Enabled = false;
             Level.Enabled = false;
             Enemy.Enabled = false;
             isLocked = true;
@@ -394,6 +392,7 @@ namespace DragonBall
         private void Transformation(int form, int delayShootTime)
         {
             SetNoMove(); // Khóa di chuyển lúc biến hình
+            bullets.Clear();
             isTransform = true;
             player.slowDownFPS = 0;
             player.stepFrame = -1;

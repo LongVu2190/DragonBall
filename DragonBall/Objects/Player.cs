@@ -19,7 +19,7 @@ namespace DragonBall.Objects
             Speed = 10;
             X = 0;
             Y = 0;
-            form = 1;
+            form = 0;
             stepFrame = 0;
             delayShootTime = 15;
             maxSlowDownFPS = 0;
@@ -53,6 +53,7 @@ namespace DragonBall.Objects
             }
             else if (form == 0 && isTransform)
             {
+                imageMovements = Directory.GetFiles("assets/player0", "*.png").ToList();
                 startFrame = 10;
                 endFrame = 16;
             }
@@ -69,6 +70,7 @@ namespace DragonBall.Objects
 
             else if (form == 1 && isTransform)
             {
+                imageMovements = Directory.GetFiles("assets/player1", "*.png").ToList();
                 startFrame = 10;
                 endFrame = 17;
             }
@@ -85,6 +87,7 @@ namespace DragonBall.Objects
 
             else if (form == 2 && isTransform)
             {
+                imageMovements = Directory.GetFiles("assets/player2", "*.png").ToList();
                 startFrame = 10;
                 endFrame = 20;
             }
@@ -101,6 +104,7 @@ namespace DragonBall.Objects
 
             else if (form == 3 && isTransform)
             {
+                imageMovements = Directory.GetFiles("assets/player3", "*.png").ToList();
                 startFrame = 10;
                 endFrame = 27;
             }
@@ -117,6 +121,7 @@ namespace DragonBall.Objects
 
             else if (form == 4 && isTransform)
             {
+                imageMovements = Directory.GetFiles("assets/player4", "*.png").ToList();
                 startFrame = 10;
                 endFrame = 22;
             }
