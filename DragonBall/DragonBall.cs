@@ -8,27 +8,28 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Objects.DragonBall;
 using DragonBall.Objects;
+using System.Text;
 
 namespace DragonBall
 {
     public partial class DragonBall : Form
     {
-        Player player = new Player();
-        List<Bullet> bullets = new List<Bullet>();
+        Player player;
+        List<Bullet> bullets;
 
-        List<Bullet> bulletsToRemove = new List<Bullet>();
-        List<PictureBox> enemies = new List<PictureBox>();
+        List<Bullet> bulletsToRemove;
+
+        Enemy enemy;
 
         bool isStart, isEnd, isLocked;
         int stepFrame, startFrame, endFrame, slowDownFrameRate, maxSlowDownFrameRate;
 
         int delayShoot, delayShootTime; // Thời gian giữa những lần bắn
-        int score; // Điểm
+        int score;
 
         bool goLeft, goRight, goUp, goDown;
 
-        int playerX; // Tọa độ X của player
-        int playerY; //Tọa độ Y của player
+        int playerX, playerY;
 
         bool isTransform, isShot;
 
@@ -49,6 +50,11 @@ namespace DragonBall
 
         private void InitValue()
         {
+            player = new Player();
+            enemy = new Enemy();
+            bullets = new List<Bullet>();
+            bulletsToRemove = new List<Bullet>();
+
             isStart = false;
             isEnd = false;
 
@@ -58,14 +64,17 @@ namespace DragonBall
 
             delayShoot = 0;
             delayShootTime = 15;
-            score = 0; // Điểm
+            score = 0;
             isLocked = false;
 
+            playerX = 0;
             playerY = 0;
 
             player.form = 1;
             isTransform = false;
             isShot = false;
+
+            CreateEnemy();
         }
 
         private void DragonBall_Paint(object sender, PaintEventArgs e)
@@ -93,42 +102,34 @@ namespace DragonBall
                     PictureBox hit = new PictureBox();
                     hit.Location = new System.Drawing.Point(bullet.X, bullet.Y);
                     hit.Size = new System.Drawing.Size(bullet.Width, bullet.Height);
-                    for (int i = 0; i < enemies.Count(); i++)
+
+                    if (Enemy != null)
                     {
-                        if (hit.Bounds.IntersectsWith(enemies[i].Bounds) && !bullet.isHit)
+                        PictureBox enemyHit = new PictureBox();
+                        enemyHit.Location = new System.Drawing.Point(enemy.X, enemy.Y);
+                        enemyHit.Size = new System.Drawing.Size(enemy.Width, enemy.Height);
+                        if (hit.Bounds.IntersectsWith(enemyHit.Bounds) && !bullet.isHit)
                         {
                             bullet.isHit = true;
+                            bulletsToRemove.Add(bullet);
                             score += 1;
                             score_lb.Text = score.ToString();
-                            enemies[i].Hide();
-                            enemies.RemoveAt(i);
-                            bulletsToRemove.Add(bullet);
+                            enemy = new Enemy();
+                            CreateEnemy();
                         }
                     }
-
                 }
             }
-            foreach (var enemy in enemies)
+
+            if (enemy.Image != null)
             {
-                Canvas.FillRectangle(new SolidBrush(enemy.BackColor), enemy.Location.X, enemy.Location.Y, enemy.Size.Width, enemy.Size.Height);
+                Canvas.DrawImage(enemy.Image, enemy.X, enemy.Y, enemy.Width, enemy.Height);
             }
+
             foreach (var bulletToRemove in bulletsToRemove)
             {
                 bullets.Remove(bulletToRemove);
             }
-
-        }
-
-        private void CreateEnemy()
-        {
-            Random rnd = new Random();
-            int x = this.Width + 50;
-            int y = rnd.Next(0, this.Height - 50);
-            PictureBox enemy = new PictureBox();
-            enemy.Size = new Size(50, 50); // replace enemyWidth and enemyHeight with the actual size of the enemy
-            enemy.Location = new Point(x, y);
-            enemy.BackColor = Color.Red; // replace Color.Red with the desired color of the enemy
-            enemies.Add(enemy);
 
         }
 
@@ -172,6 +173,8 @@ namespace DragonBall
         }
         private void Timer_Tick(object sender, EventArgs e)
         {
+            if (player == null) return;
+
             if (delayShoot != delayShootTime) // Tăng thời gian giữa những lần bắn
             {
                 delayShoot++;
@@ -227,6 +230,19 @@ namespace DragonBall
 
             this.Invalidate();
         }
+        private void Enemy_Tick(object sender, EventArgs e)
+        {
+            if (player == null) return;
+
+            enemy.X -= player.Speed;
+
+            if (enemy.X + 200 < 0)
+            {
+                enemy = new Enemy();
+                CreateEnemy();
+            }
+            this.Invalidate();
+        }
 
         private void AnimateBullet()
         {
@@ -253,22 +269,7 @@ namespace DragonBall
                 }
             }
 
-        }
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-            CreateEnemy();
-            for (int i = 0; i < enemies.Count(); i++)
-            {
-
-                enemies[i].Left -= 5;
-                if (enemies[i].Left + 50 < 0)
-                {
-                    enemies[i].Visible = false;
-                    Enemy.Enabled = false;
-                }
-            }
-        }
-
+        }     
         private void AnimatePlayer()
         {
             slowDownFrameRate += 1;
@@ -287,9 +288,21 @@ namespace DragonBall
                 isTransform = false;
                 isLocked = false;
             }
-            player.Image = Image.FromFile(player.imageMovements[stepFrame]);
+            if (player.imageMovements.Count != 0)
+                player.Image = Image.FromFile(player.imageMovements[stepFrame]);
         }
+        private void AnimateEnemy()
+        {
 
+        }
+        private void CreateEnemy()
+        {
+            enemy.imageMovements = Directory.GetFiles("E0", "*.png").ToList();
+            enemy.Image = Image.FromFile(enemy.imageMovements[0]);
+
+            enemy.X = this.Width + 50;
+            enemy.Y = new Random().Next(0, this.Height - 200);
+        }
         // Để lựa chọn ảnh nhân vật sẽ được vẽ lên
         private void SetFramePlayer(int form, Enums.Move status)
         {
@@ -378,6 +391,10 @@ namespace DragonBall
                 endFrame = 5;
             }
         }
+        private void SetFrameEnemy(int form)
+        {
+
+        }
         private void DragonBall_KeyDown(object sender, KeyEventArgs e)
         {
             if (isLocked || !isStart) return;
@@ -449,6 +466,9 @@ namespace DragonBall
         {
             Timer.Enabled = false;
             Level.Enabled = false;
+            Enemy.Enabled = false;
+            isLocked = true;
+            isEnd = true;
             score = 0;
             MessageBox.Show("You win", "Notification");
             EndGame end = new EndGame(this);

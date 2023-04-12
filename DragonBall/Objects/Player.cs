@@ -14,7 +14,6 @@ namespace DragonBall.Objects
         public int Height { get; set; } = 200;
         public int Width { get; set; } = 200;
         public int Speed { get; set; } = 10;
-
         public Image Image { get; set; } 
 
         public List<string> imageMovements = new List<string>();

@@ -59,7 +59,9 @@
             // 
             // Enemy
             // 
-            this.Enemy.Tick += new System.EventHandler(this.timer1_Tick);
+            this.Enemy.Enabled = true;
+            this.Enemy.Interval = 120;
+            this.Enemy.Tick += new System.EventHandler(this.Enemy_Tick);
             // 
             // DragonBall
             // 

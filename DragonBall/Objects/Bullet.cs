@@ -29,5 +29,6 @@ namespace Objects.DragonBall
         public bool isMoving { get; set; } = false;
         public bool isHit { get; set; } = false;
         public int speed { get; set; } = 10;
+        ~Bullet() { }
     }
 }
