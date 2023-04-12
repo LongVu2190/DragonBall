@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace Objects.DragonBall
 {
-    internal class Bullet
+    internal class C_Bullet
     {
-        public Bullet()
+        public C_Bullet()
         {
 
         }
-        public Bullet(int x, int y, bool isMoving)
+        public C_Bullet(int x, int y, bool isMoving)
         {
             X = x;
             Y = y;
@@ -29,6 +29,6 @@ namespace Objects.DragonBall
         public bool isMoving { get; set; } = false;
         public bool isHit { get; set; } = false;
         public int speed { get; set; } = 10;
-        ~Bullet() { }
+        ~C_Bullet() { }
     }
 }

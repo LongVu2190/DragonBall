@@ -10,9 +10,9 @@ using DragonBall.Enums;
 
 namespace DragonBall.Objects
 {
-    internal class Player
+    internal class C_Player : A_Object
     {       
-        public Player() 
+        public C_Player() 
         {
             Height = 200;
             Width = 200;
@@ -28,21 +28,8 @@ namespace DragonBall.Objects
             Image = Image.FromFile(imageMovements[10]);
         }
 
-        public int X { get; set; }  
-        public int Y { get; set; }
-        public int Height { get; set; }
-        public int Width { get; set; }
-        public int Speed { get; set; }
-        public int stepFrame { get; set; }
-        public int startFrame { get; set; }
-        public int endFrame { get; set; }
         public int delayShootTime { get; set; }
-        public int slowDownFPS { get; set; }
-        public int maxSlowDownFPS { get; set; }
-        public int form { get; set; }
-        public Image Image { get; set; } 
 
-        public List<string> imageMovements = new List<string>();
 
         public void SetFrame(bool isShot, bool isTransform, Move status)
         {
@@ -137,6 +124,6 @@ namespace DragonBall.Objects
             }
         }
 
-        ~Player() { }
+        ~C_Player() { }
     }
 }

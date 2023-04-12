@@ -14,11 +14,11 @@ namespace DragonBall
 {
     public partial class DragonBall : Form
     {
-        Player player;
-        Enemy enemy;
+        C_Player player;
+        C_Enemy enemy;
 
-        List<Bullet> bullets;
-        List<Bullet> bulletsToRemove;
+        List<C_Bullet> bullets;
+        List<C_Bullet> bulletsToRemove;
 
         bool isStart, isEnd, isLocked;
 
@@ -96,7 +96,7 @@ namespace DragonBall
                             bulletsToRemove.Add(bullet);
                             score += 1;
                             score_lb.Text = score.ToString();
-                            enemy = new Enemy();
+                            enemy = new C_Enemy();
                             CreateEnemy();
                         }
                     }
@@ -220,7 +220,7 @@ namespace DragonBall
 
             if (enemy.X + 200 < 0)
             {
-                enemy = new Enemy();
+                enemy = new C_Enemy();
                 CreateEnemy();
             }
 
@@ -362,10 +362,10 @@ namespace DragonBall
 
         public void StartGame()
         {
-            player = new Player();
-            enemy = new Enemy();
-            bullets = new List<Bullet>();
-            bulletsToRemove = new List<Bullet>();
+            player = new C_Player();
+            enemy = new C_Enemy();
+            bullets = new List<C_Bullet>();
+            bulletsToRemove = new List<C_Bullet>();
 
             InitValue();
             this.BackgroundImageLayout = ImageLayout.Stretch;
@@ -415,7 +415,7 @@ namespace DragonBall
 
             delayShoot = 0;
 
-            Bullet a = new Bullet(player.X + player.Width,
+            C_Bullet a = new C_Bullet(player.X + player.Width,
                                     player.Y + player.Height / 2 + 20,
                                     true);
 

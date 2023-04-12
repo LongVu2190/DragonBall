@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace DragonBall.Objects
 {
-    internal class Enemy
+    internal class C_Enemy : A_Object
     {
-        public Enemy()
+        public C_Enemy()
         {
             Height = 200;
             Width = 200;
@@ -22,21 +22,7 @@ namespace DragonBall.Objects
             imageMovements = Directory.GetFiles("assets/enemy0", "*.png").ToList();
             Image = Image.FromFile(imageMovements[0]);
         }
-        
-        public int Height { get; set; }
-        public int Width { get; set; }
-        public int Speed { get; set; }
-        public int X { get; set; }
-        public int Y { get; set; }
-        public int stepFrame { get; set; }
-        public int startFrame { get; set; }
-        public int endFrame { get; set; }
-        public int slowDownFPS { get; set; }
-        public int maxSlowDownFPS { get; set; }
-        public int form { get; set; }
-        public Image Image { get; set; }
 
-        public List<string> imageMovements = new List<string>();
         public void SetFrame()
         {
             if (form == 1)
@@ -58,6 +44,6 @@ namespace DragonBall.Objects
             startFrame = 0;
             endFrame = 2;
         }
-        ~Enemy() { }
+        ~C_Enemy() { }
     }
 }

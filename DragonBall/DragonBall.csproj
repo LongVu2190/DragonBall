@@ -46,7 +46,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Objects\Bullet.cs" />
+    <Compile Include="Objects\A_Object.cs" />
+    <Compile Include="Objects\C_Bullet.cs" />
     <Compile Include="DragonBall.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -60,8 +61,8 @@
       <DependentUpon>EndGame.cs</DependentUpon>
     </Compile>
     <Compile Include="Enums\Move.cs" />
-    <Compile Include="Objects\Enemy.cs" />
-    <Compile Include="Objects\Player.cs" />
+    <Compile Include="Objects\C_Enemy.cs" />
+    <Compile Include="Objects\C_Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="DragonBall.resx">
