@@ -79,7 +79,11 @@ namespace DragonBall
             isLocked = true;
             isEnd = true;
             score = 0;
-            MessageBox.Show("You win", "Notification");
+            if (player.Health == 0)
+                MessageBox.Show("You lose", "Notification");
+            else
+                MessageBox.Show("You win", "Notification");
+
             EndGame end = new EndGame(this);
             end.ShowDialog();
         }
@@ -164,7 +168,9 @@ namespace DragonBall
         // Nếu đủ score thì biến hình lên cấp
         private void Level_Tick(object sender, EventArgs e)
         {
-            if (score == 50) isEnd = true;
+            if (score == 30) isEnd = true;
+            if (player.Health == 0) isEnd = true;
+
             if (!isStart) return;
 
             if (score == 0)
@@ -172,22 +178,22 @@ namespace DragonBall
                 Transformation(0, 15);               
                 score++;
             }
-            else if (score == 10)
+            else if (score == 5)
             {
                 Transformation(1, 13);
                 score++;
             }
-            else if (score == 20)
+            else if (score == 10)
             {
                 Transformation(2, 10);
                 score++;
             }
-            else if (score == 30)
+            else if (score == 15)
             {
                 Transformation(3, 8);
                 score++;
             }
-            else if (score == 40)
+            else if (score == 20)
             {
                 Transformation(4, 6);
                 score++;
