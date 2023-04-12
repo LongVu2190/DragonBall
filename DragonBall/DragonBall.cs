@@ -15,11 +15,11 @@ namespace DragonBall
     public partial class DragonBall : Form
     {
         C_Player player;
-        C_Enemy enemy;
 
         List<C_Bullet> bullets;
         List<C_Bullet> bulletsToRemove;
-
+        List<C_Enemy> Enemies;
+        List<C_Enemy> enemiesToRemove;
         bool isStart, isEnd, isLocked;
 
         int delayShoot;
@@ -46,9 +46,10 @@ namespace DragonBall
         public void StartGame()
         {
             player = new C_Player();
-            enemy = new C_Enemy();
             bullets = new List<C_Bullet>();
             bulletsToRemove = new List<C_Bullet>();
+            Enemies = new List<C_Enemy>();
+            enemiesToRemove = new List<C_Enemy>();
 
             isEnd = false;
 
@@ -58,9 +59,6 @@ namespace DragonBall
 
             isTransform = false;
             isShot = false;
-
-            CreateEnemy();
-
             this.BackgroundImageLayout = ImageLayout.Stretch;
             this.DoubleBuffered = true;
 
@@ -105,63 +103,66 @@ namespace DragonBall
                 if (bullet.isMoving)
                 {
                     Canvas.DrawImage(bullet.Image, bullet.X, bullet.Y, bullet.Width, bullet.Height);
-
-                    // Tạo 1 biến picturebox tạm để xài hàm IntersectWith
                     PictureBox bulletHit = new PictureBox()
                     {
                         Location = new System.Drawing.Point(bullet.X, bullet.Y),
                         Size = new System.Drawing.Size(bullet.Width, bullet.Height)
                     };
-
-                    if (Enemy != null)
+                    // Tạo 1 biến picturebox tạm để xài hàm IntersectWith
+                    foreach (C_Enemy enemy in Enemies)
                     {
-                        PictureBox enemyHit = new PictureBox()
+                        if (enemy != null)
                         {
-                            Location = new System.Drawing.Point(enemy.X, enemy.Y),
-                            Size = new System.Drawing.Size(enemy.Width, enemy.Height)
-                        };
+                            PictureBox enemyHit = new PictureBox()
+                            {
+                                Location = new System.Drawing.Point(enemy.X, enemy.Y),
+                                Size = new System.Drawing.Size(enemy.Width, enemy.Height)
+                            };
+                            if (bulletHit.Bounds.IntersectsWith(enemyHit.Bounds))
+                            {
+                                enemy.Health--;
+                                bulletsToRemove.Add(bullet);
+                                if (enemy.Health == 0)
+                                {
+                                    enemiesToRemove.Add(enemy);
+                                    score += 1;
+                                    score_lb.Text = score.ToString();
 
-                        if (bulletHit.Bounds.IntersectsWith(enemyHit.Bounds))
-                        {
-                            enemy.Health--;
-                            bulletsToRemove.Add(bullet);
+                                }
+                            }
+                            enemy_health.Value = enemy.Health;
                         }
-                        if (enemy.Health == 0)
-                        {
-                            score += 1;
-                            score_lb.Text = score.ToString();
-                            enemy = new C_Enemy();
-                            CreateEnemy();
-                        }
-                        enemy_health.Value = enemy.Health;
                     }
                 }
             }
-
+            foreach (C_Enemy enemyToRemove in enemiesToRemove)
+            {
+                Enemies.Remove(enemyToRemove);
+            }
             // Vẽ enemy và va chạm với player
-            if (enemy.Image != null)
+            foreach (C_Enemy enemy in Enemies)
             {
                 Canvas.DrawImage(enemy.Image, enemy.X, enemy.Y, enemy.Width, enemy.Height);
-
-                PictureBox enemyHit = new PictureBox()
+                if (enemy.Image != null)
                 {
-                    Location = new Point(enemy.X, enemy.Y),
-                    Size = new Size(enemy.Width, enemy.Height)
-                };
+                    PictureBox enemyHit = new PictureBox()
+                    {
+                        Location = new Point(enemy.X, enemy.Y),
+                        Size = new Size(enemy.Width, enemy.Height)
+                    };
 
-                PictureBox playerHit = new PictureBox()
-                {
-                    Location = new Point(player.X, player.Y),
-                    Size = new Size(player.Width, player.Height)
-                };
+                    PictureBox playerHit = new PictureBox()
+                    {
+                        Location = new Point(player.X, player.Y),
+                        Size = new Size(player.Width, player.Height)
+                    };
 
-                if (enemyHit.Bounds.IntersectsWith(playerHit.Bounds) && !enemy.isHit)
-                {
-                    enemy.isHit = true;
-                    player.Health--;
-                    player_health.Value = player.Health;
-                    enemy = new C_Enemy();
-                    CreateEnemy();
+                    if (enemyHit.Bounds.IntersectsWith(playerHit.Bounds) && !enemy.isHit)
+                    {
+                        enemy.isHit = true;
+                        player.Health--;
+                        player_health.Value = player.Health;
+                    }
                 }
             }
             // Xóa đạn đá bắn dính
@@ -275,18 +276,19 @@ namespace DragonBall
         private void Enemy_Tick(object sender, EventArgs e)
         {
             if (isTransform || isEnd || !isStart) return;
-
-            enemy.X -= player.Speed;
-
-            if (enemy.X + 200 < 0)
+            CreateEnemy();
+            foreach (C_Enemy enemy in Enemies)
             {
-                enemy = new C_Enemy();
-                CreateEnemy();
-            }
+                enemy.X -= player.Speed;
 
-            enemy.SetFrame();
-            AnimateEnemy();
-            this.Invalidate();
+                if (enemy.X + 200 < 0)
+                {
+                    Enemies.Remove(enemy);
+                }
+                enemy.SetFrame();
+                AnimateEnemy();
+                this.Invalidate();
+            }
         }
 
         private void AnimateBullet()
@@ -330,36 +332,50 @@ namespace DragonBall
         }
         private void AnimateEnemy()
         {
-            if (enemy == null) return;
-
-            enemy.slowDownFPS += 1;
-
-            if (enemy.slowDownFPS == enemy.maxSlowDownFPS)
+            foreach (C_Enemy enemy in Enemies)
             {
-                enemy.stepFrame++;
-                enemy.slowDownFPS = 0;
-            }
+                if (enemy == null) return;
 
-            if (enemy.slowDownFPS == enemy.maxSlowDownFPS)
-            {
-                enemy.stepFrame++;
-                enemy.slowDownFPS = 0;
-            }
+                enemy.slowDownFPS += 1;
 
-            if (enemy.stepFrame > enemy.endFrame || enemy.stepFrame < enemy.startFrame)
-            {
-                enemy.stepFrame = enemy.startFrame;
+                if (enemy.slowDownFPS == enemy.maxSlowDownFPS)
+                {
+                    enemy.stepFrame++;
+                    enemy.slowDownFPS = 0;
+                }
+
+                if (enemy.slowDownFPS == enemy.maxSlowDownFPS)
+                {
+                    enemy.stepFrame++;
+                    enemy.slowDownFPS = 0;
+                }
+
+                if (enemy.stepFrame > enemy.endFrame || enemy.stepFrame < enemy.startFrame)
+                {
+                    enemy.stepFrame = enemy.startFrame;
+                }
+                if (enemy != null)
+                    enemy.Image = Image.FromFile(enemy.imageMovements[enemy.stepFrame]);
             }
-            if (enemy != null)
-                enemy.Image = Image.FromFile(enemy.imageMovements[enemy.stepFrame]);
         }
         private void CreateEnemy()
         {
-            enemy.form = player.form;
-            enemy.SetFrame();
-            enemy.X = this.Width + 50;
-            enemy.Y = new Random().Next(0, this.Height - 250);
+            if (Enemies.Count < 2)
+            {
+                C_Enemy enemy = new C_Enemy();
+                enemy.form = player.form;
+                enemy.SetFrame();
+                enemy.X = this.Width + 50;
+                enemy.Y = new Random().Next(0, this.Height - 250);
+                PictureBox enemyCreate = new PictureBox()
+                {
+                    Location = new Point(enemy.X, enemy.Y),
+                    Size = new Size(enemy.Width, enemy.Height)
+                };
+                Enemies.Add(enemy);
+            }
         }
+
 
         private void Transformation(int form, int delayShootTime)
         {
