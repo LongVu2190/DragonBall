@@ -77,7 +77,6 @@ namespace DragonBall
             Enemy.Enabled = false;
             isLocked = true;
             isEnd = true;
-            score = 0;
             if (player.Health == 0)
                 MessageBox.Show("You lose", "Notification");
             else
@@ -89,6 +88,7 @@ namespace DragonBall
         private void DragonBall_Paint(object sender, PaintEventArgs e)
         {
             if (!isStart) return;
+
             if (isEnd)
             {
                 EndGame();
@@ -96,7 +96,6 @@ namespace DragonBall
 
             Graphics Canvas = e.Graphics;
             Canvas.DrawImage(player.Image, player.X, player.Y, player.Width, player.Height);
-
 
             if (bullets == null) return;
 
@@ -108,16 +107,21 @@ namespace DragonBall
                     Canvas.DrawImage(bullet.Image, bullet.X, bullet.Y, bullet.Width, bullet.Height);
 
                     // Tạo 1 biến picturebox tạm để xài hàm IntersectWith
-                    PictureBox hit = new PictureBox();
-                    hit.Location = new System.Drawing.Point(bullet.X, bullet.Y);
-                    hit.Size = new System.Drawing.Size(bullet.Width, bullet.Height);
+                    PictureBox bulletHit = new PictureBox()
+                    {
+                        Location = new System.Drawing.Point(bullet.X, bullet.Y),
+                        Size = new System.Drawing.Size(bullet.Width, bullet.Height)
+                    };
 
                     if (Enemy != null)
                     {
-                        PictureBox enemyHit = new PictureBox();
-                        enemyHit.Location = new System.Drawing.Point(enemy.X, enemy.Y);
-                        enemyHit.Size = new System.Drawing.Size(enemy.Width, enemy.Height);
-                        if (hit.Bounds.IntersectsWith(enemyHit.Bounds) && !bullet.isHit)
+                        PictureBox enemyHit = new PictureBox()
+                        {
+                            Location = new System.Drawing.Point(enemy.X, enemy.Y),
+                            Size = new System.Drawing.Size(enemy.Width, enemy.Height)
+                        };
+
+                        if (bulletHit.Bounds.IntersectsWith(enemyHit.Bounds) && !bullet.isHit)
                         {
                             enemy.Health--;
                             bullet.isHit = true;
@@ -126,7 +130,7 @@ namespace DragonBall
                         if (enemy.Health == 0)
                         {
                             score += 1;
-                            score_lb.Text = score.ToString();                           
+                            score_lb.Text = score.ToString();
                             enemy = new C_Enemy();
                             CreateEnemy();
                         }
@@ -139,15 +143,19 @@ namespace DragonBall
             {
                 Canvas.DrawImage(enemy.Image, enemy.X, enemy.Y, enemy.Width, enemy.Height);
 
-                PictureBox ene = new PictureBox();
-                ene.Location = new System.Drawing.Point(enemy.X, enemy.Y);
-                ene.Size = new System.Drawing.Size(enemy.Width, enemy.Height);
+                PictureBox enemyHit = new PictureBox()
+                {
+                    Location = new Point(enemy.X, enemy.Y),
+                    Size = new Size(enemy.Width, enemy.Height)
+                };
 
-                PictureBox play = new PictureBox();
-                play.Location = new System.Drawing.Point(player.X, player.Y);
-                play.Size = new System.Drawing.Size(player.Width, player.Height);
+                PictureBox playerHit = new PictureBox()
+                {
+                    Location = new Point(player.X, player.Y),
+                    Size = new Size(player.Width, player.Height)
+                };
 
-                if (ene.Bounds.IntersectsWith(play.Bounds) && !enemy.isHit)
+                if (enemyHit.Bounds.IntersectsWith(playerHit.Bounds) && !enemy.isHit)
                 {
                     enemy.isHit = true;
                     player.Health--;
@@ -170,14 +178,14 @@ namespace DragonBall
             if (isEnd || !isStart) return;
 
             if (player.Health == 0 || score == 30)
-            { 
+            {
                 isEnd = true;
                 EndGame();
             }
 
             if (score == 0)
             {
-                Transformation(0, 15);               
+                Transformation(0, 15);
                 score++;
             }
             else if (score == 5)
@@ -266,7 +274,7 @@ namespace DragonBall
         }
         private void Enemy_Tick(object sender, EventArgs e)
         {
-            if (isTransform || isEnd || !isStart)  return;
+            if (isTransform || isEnd || !isStart) return;
 
             enemy.X -= player.Speed;
 
@@ -306,7 +314,7 @@ namespace DragonBall
                 }
             }
 
-        }     
+        }
         private void AnimatePlayer()
         {
             player.slowDownFPS += 1;

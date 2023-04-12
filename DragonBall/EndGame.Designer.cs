@@ -59,7 +59,10 @@
             this.ClientSize = new System.Drawing.Size(376, 248);
             this.Controls.Add(this.Play_btn);
             this.Controls.Add(this.Exit_btn);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "EndGame";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "EndGame";
             this.ResumeLayout(false);
 

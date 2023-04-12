@@ -39,7 +39,6 @@
             // 
             // Moving
             // 
-            this.Moving.Enabled = true;
             this.Moving.Interval = 10;
             this.Moving.Tick += new System.EventHandler(this.Moving_Tick);
             // 
@@ -55,13 +54,11 @@
             // 
             // Level
             // 
-            this.Level.Enabled = true;
             this.Level.Interval = 20;
             this.Level.Tick += new System.EventHandler(this.Level_Tick);
             // 
             // Enemy
             // 
-            this.Enemy.Enabled = true;
             this.Enemy.Interval = 120;
             this.Enemy.Tick += new System.EventHandler(this.Enemy_Tick);
             // 
