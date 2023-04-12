@@ -43,9 +43,13 @@ namespace DragonBall
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool AllocConsole();
-
-        private void InitValue()
+        public void StartGame()
         {
+            player = new C_Player();
+            enemy = new C_Enemy();
+            bullets = new List<C_Bullet>();
+            bulletsToRemove = new List<C_Bullet>();
+
             isStart = false;
             isEnd = false;
 
@@ -57,8 +61,28 @@ namespace DragonBall
             isShot = false;
 
             CreateEnemy();
-        }
 
+            this.BackgroundImageLayout = ImageLayout.Stretch;
+            this.DoubleBuffered = true;
+
+            isStart = true;
+
+            Moving.Enabled = true;
+            Level.Enabled = true;
+            Enemy.Enabled = true;
+        }
+        private void EndGame()
+        {
+            Moving.Enabled = false;
+            Level.Enabled = false;
+            Enemy.Enabled = false;
+            isLocked = true;
+            isEnd = true;
+            score = 0;
+            MessageBox.Show("You win", "Notification");
+            EndGame end = new EndGame(this);
+            end.ShowDialog();
+        }
         private void DragonBall_Paint(object sender, PaintEventArgs e)
         {
             if (!isStart) return;
@@ -92,13 +116,18 @@ namespace DragonBall
                         enemyHit.Size = new System.Drawing.Size(enemy.Width, enemy.Height);
                         if (hit.Bounds.IntersectsWith(enemyHit.Bounds) && !bullet.isHit)
                         {
+                            enemy.Health--;
                             bullet.isHit = true;
                             bulletsToRemove.Add(bullet);
+                        }
+                        if (enemy.Health == 0)
+                        {
                             score += 1;
-                            score_lb.Text = score.ToString();
+                            score_lb.Text = score.ToString();                           
                             enemy = new C_Enemy();
                             CreateEnemy();
                         }
+                        enemy_health.Value = enemy.Health;
                     }
                 }
             }
@@ -106,6 +135,23 @@ namespace DragonBall
             if (enemy.Image != null)
             {
                 Canvas.DrawImage(enemy.Image, enemy.X, enemy.Y, enemy.Width, enemy.Height);
+
+                PictureBox ene = new PictureBox();
+                ene.Location = new System.Drawing.Point(enemy.X, enemy.Y);
+                ene.Size = new System.Drawing.Size(enemy.Width, enemy.Height);
+
+                PictureBox play = new PictureBox();
+                play.Location = new System.Drawing.Point(player.X, player.Y);
+                play.Size = new System.Drawing.Size(player.Width, player.Height);
+
+                if (ene.Bounds.IntersectsWith(play.Bounds) && !enemy.isHit)
+                {
+                    enemy.isHit = true;
+                    player.Health--;
+                    player_health.Value = player.Health;
+                    enemy = new C_Enemy();
+                    CreateEnemy();
+                }
             }
 
             foreach (var bulletToRemove in bulletsToRemove)
@@ -309,6 +355,43 @@ namespace DragonBall
             enemy.Y = new Random().Next(0, this.Height - 250);
         }
 
+        private void Transformation(int form, int delayShootTime)
+        {
+            SetNoMove(); // Khóa di chuyển lúc biến hình
+            bullets.Clear();
+            isTransform = true;
+            player.slowDownFPS = 0;
+            player.stepFrame = -1;
+            delayShoot = 0;
+            player.form = form;
+            player.delayShootTime = delayShootTime;
+        }
+        private void SetNoMove()
+        {
+            isLocked = true;
+            isShot = false;
+            goUp = false;
+            goDown = false;
+            goLeft = false;
+            goRight = false;
+        }
+        private void Shooting()
+        {
+            if (delayShoot != player.delayShootTime) return; // Tăng thời gian giữa những lần bắn
+
+            delayShoot = 0;
+
+            C_Bullet a = new C_Bullet(player.X + player.Width,
+                                    player.Y + player.Height / 2 + 20,
+                                    true);
+
+            a.Image = Image.FromFile(player.imageMovements[9]); // Hình đạn
+            bullets.Add(a);
+
+            isShot = true;
+            player.slowDownFPS = 0;
+            player.stepFrame = 0;
+        }
 
         private void DragonBall_KeyDown(object sender, KeyEventArgs e)
         {
@@ -357,74 +440,6 @@ namespace DragonBall
             {
                 goDown = false;
             }
-        }
-
-
-        public void StartGame()
-        {
-            player = new C_Player();
-            enemy = new C_Enemy();
-            bullets = new List<C_Bullet>();
-            bulletsToRemove = new List<C_Bullet>();
-
-            InitValue();
-            this.BackgroundImageLayout = ImageLayout.Stretch;
-            this.DoubleBuffered = true;
-
-            isStart = true;
-
-            Moving.Enabled = true;
-            Level.Enabled = true;
-            Enemy.Enabled = true;
-        }
-        private void EndGame()
-        {
-            Moving.Enabled = false;
-            Level.Enabled = false;
-            Enemy.Enabled = false;
-            isLocked = true;
-            isEnd = true;
-            score = 0;
-            MessageBox.Show("You win", "Notification");
-            EndGame end = new EndGame(this);
-            end.ShowDialog();
-        }
-        private void Transformation(int form, int delayShootTime)
-        {
-            SetNoMove(); // Khóa di chuyển lúc biến hình
-            bullets.Clear();
-            isTransform = true;
-            player.slowDownFPS = 0;
-            player.stepFrame = -1;
-            delayShoot = 0;
-            player.form = form;
-            player.delayShootTime = delayShootTime;
-        }
-        private void SetNoMove()
-        {
-            isLocked = true;
-            isShot = false;
-            goUp = false;
-            goDown = false;
-            goLeft = false;
-            goRight = false;
-        }
-        private void Shooting()
-        {
-            if (delayShoot != player.delayShootTime) return; // Tăng thời gian giữa những lần bắn
-
-            delayShoot = 0;
-
-            C_Bullet a = new C_Bullet(player.X + player.Width,
-                                    player.Y + player.Height / 2 + 20,
-                                    true);
-
-            a.Image = Image.FromFile(player.imageMovements[9]); // Hình đạn
-            bullets.Add(a);
-
-            isShot = true;
-            player.slowDownFPS = 0;
-            player.stepFrame = 0;
         }
     }
 }

@@ -18,6 +18,7 @@ namespace DragonBall.Objects
             Height = 200;
             Width = 200;
             Speed = 10;
+            Health = 10;
             X = 0;
             Y = 0;
             form = 0;

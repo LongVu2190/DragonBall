@@ -33,6 +33,8 @@
             this.score_lb = new System.Windows.Forms.Label();
             this.Level = new System.Windows.Forms.Timer(this.components);
             this.Enemy = new System.Windows.Forms.Timer(this.components);
+            this.player_health = new System.Windows.Forms.ProgressBar();
+            this.enemy_health = new System.Windows.Forms.ProgressBar();
             this.SuspendLayout();
             // 
             // Moving
@@ -63,6 +65,24 @@
             this.Enemy.Interval = 120;
             this.Enemy.Tick += new System.EventHandler(this.Enemy_Tick);
             // 
+            // player_health
+            // 
+            this.player_health.Location = new System.Drawing.Point(112, 62);
+            this.player_health.Maximum = 10;
+            this.player_health.Name = "player_health";
+            this.player_health.Size = new System.Drawing.Size(189, 29);
+            this.player_health.TabIndex = 2;
+            this.player_health.Value = 10;
+            // 
+            // enemy_health
+            // 
+            this.enemy_health.Location = new System.Drawing.Point(852, 66);
+            this.enemy_health.Maximum = 2;
+            this.enemy_health.Name = "enemy_health";
+            this.enemy_health.Size = new System.Drawing.Size(189, 29);
+            this.enemy_health.TabIndex = 3;
+            this.enemy_health.Value = 2;
+            // 
             // DragonBall
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -70,6 +90,8 @@
             this.BackgroundImage = global::DragonBall.Properties.Resources._1940_7864_6519v2;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1148, 637);
+            this.Controls.Add(this.enemy_health);
+            this.Controls.Add(this.player_health);
             this.Controls.Add(this.score_lb);
             this.Name = "DragonBall";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -89,6 +111,8 @@
         private System.Windows.Forms.Label score_lb;
         private System.Windows.Forms.Timer Level;
         private System.Windows.Forms.Timer Enemy;
+        private System.Windows.Forms.ProgressBar player_health;
+        private System.Windows.Forms.ProgressBar enemy_health;
     }
 }
 

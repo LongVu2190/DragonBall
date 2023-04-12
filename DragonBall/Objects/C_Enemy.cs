@@ -10,15 +10,18 @@ namespace DragonBall.Objects
 {
     internal class C_Enemy : A_Object
     {
+        public bool isHit;
         public C_Enemy()
         {
             Height = 200;
             Width = 200;
             Speed = 10;
+            Health = 2;
             form = 0;
             stepFrame = 0;
             slowDownFPS = 0;
             maxSlowDownFPS = 3;
+            isHit = false;
             imageMovements = Directory.GetFiles("assets/enemy0", "*.png").ToList();
             Image = Image.FromFile(imageMovements[0]);
         }

@@ -22,6 +22,7 @@ namespace DragonBall.Objects
         public int slowDownFPS { get; set; }
         public int maxSlowDownFPS { get; set; }
         public int form { get; set; }
+        public int Health { get; set; }
         public Image Image { get; set; }
         public List<string> imageMovements { get; set; }
         ~A_Object() { }
