@@ -1,5 +1,4 @@
-﻿using DragonBall.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -9,27 +8,24 @@ using System.Windows.Forms;
 using Objects.DragonBall;
 using DragonBall.Objects;
 using System.Text;
+using DragonBall.Enums;
 
 namespace DragonBall
 {
     public partial class DragonBall : Form
     {
         Player player;
-        List<Bullet> bullets;
-
-        List<Bullet> bulletsToRemove;
-
         Enemy enemy;
 
-        bool isStart, isEnd, isLocked;
-        int stepFrame, startFrame, endFrame, slowDownFrameRate, maxSlowDownFrameRate;
+        List<Bullet> bullets;
+        List<Bullet> bulletsToRemove;
 
-        int delayShoot, delayShootTime; // Thời gian giữa những lần bắn
+        bool isStart, isEnd, isLocked;
+
+        int delayShoot;
         int score;
 
         bool goLeft, goRight, goUp, goDown;
-
-        int playerX, playerY;
 
         bool isTransform, isShot;
 
@@ -50,27 +46,13 @@ namespace DragonBall
 
         private void InitValue()
         {
-            player = new Player();
-            enemy = new Enemy();
-            bullets = new List<Bullet>();
-            bulletsToRemove = new List<Bullet>();
-
             isStart = false;
             isEnd = false;
 
-            stepFrame = 0;
-            slowDownFrameRate = 0;
-            maxSlowDownFrameRate = 6;
-
             delayShoot = 0;
-            delayShootTime = 15;
             score = 0;
             isLocked = false;
 
-            playerX = 0;
-            playerY = 0;
-
-            player.form = 1;
             isTransform = false;
             isShot = false;
 
@@ -84,9 +66,9 @@ namespace DragonBall
             {
                 EndGame();
             }
-            // Vẽ nhân vật
+
             Graphics Canvas = e.Graphics;
-            Canvas.DrawImage(player.Image, playerX, playerY, player.Width, player.Height);
+            Canvas.DrawImage(player.Image, player.X, player.Y, player.Width, player.Height);
 
 
             if (bullets == null) return;
@@ -141,31 +123,31 @@ namespace DragonBall
 
             if (score == 0)
             {
-                player.imageMovements = Directory.GetFiles("Goku0", "*.png").ToList();
+                player.imageMovements = Directory.GetFiles("assets/player0", "*.png").ToList();
                 Transformation(0, 15);
                 score++;
             }
             else if (score == 10)
             {
-                player.imageMovements = Directory.GetFiles("Goku1", "*.png").ToList();
+                player.imageMovements = Directory.GetFiles("assets/player1", "*.png").ToList();
                 Transformation(1, 13);
                 score++;
             }
             else if (score == 20)
             {
-                player.imageMovements = Directory.GetFiles("Goku2", "*.png").ToList();
+                player.imageMovements = Directory.GetFiles("assets/player2", "*.png").ToList();
                 Transformation(2, 10);
                 score++;
             }
             else if (score == 30)
             {
-                player.imageMovements = Directory.GetFiles("Goku3", "*.png").ToList();
+                player.imageMovements = Directory.GetFiles("assets/player3", "*.png").ToList();
                 Transformation(3, 8);
                 score++;
             }
             else if (score == 40)
             {
-                player.imageMovements = Directory.GetFiles("Goku4", "*.png").ToList();
+                player.imageMovements = Directory.GetFiles("assets/player4", "*.png").ToList();
                 Transformation(4, 6);
                 score++;
             }
@@ -175,7 +157,7 @@ namespace DragonBall
         {
             if (player == null) return;
 
-            if (delayShoot != delayShootTime) // Tăng thời gian giữa những lần bắn
+            if (delayShoot != player.delayShootTime) // Tăng thời gian giữa những lần bắn
             {
                 delayShoot++;
             }
@@ -187,44 +169,44 @@ namespace DragonBall
 
             if (isTransform)
             {
-                SetFramePlayer(player.form, Enums.Move.Right);
+                player.SetFrame(isShot, isTransform, Enums.Move.Right);
                 AnimatePlayer();
             }
             else if (!goLeft)
             {
-                SetFramePlayer(player.form, Enums.Move.Right);
+                player.SetFrame(isShot, isTransform, Enums.Move.Right);
                 AnimatePlayer();
             }
 
             // Di chuyển lên
-            if (goUp && (playerY - player.Speed) > 0)
+            if (goUp && (player.Y - player.Speed) > 0)
             {
-                playerY -= player.Speed;
-                SetFramePlayer(player.form, Enums.Move.Right);
+                player.Y -= player.Speed;
+                player.SetFrame(isShot, isTransform, Enums.Move.Right);
                 AnimatePlayer();
             }
 
             // Di chuyển xuống
-            if (goDown && (playerY + player.Speed) < this.ClientSize.Height - player.Height)
+            if (goDown && (player.Y + player.Speed) < this.ClientSize.Height - player.Height)
             {
-                playerY += player.Speed;
-                SetFramePlayer(player.form, Enums.Move.Right);
+                player.Y += player.Speed;
+                player.SetFrame(isShot, isTransform, Enums.Move.Right);
                 AnimatePlayer();
             }
 
             // Di chuyển trái
-            if (goLeft && (playerX - player.Speed) > 0)
+            if (goLeft && (player.X - player.Speed) > 0)
             {
-                playerX -= player.Speed;
-                SetFramePlayer(player.form, Enums.Move.Left);
+                player.X -= player.Speed;
+                player.SetFrame(isShot, isTransform, Enums.Move.Left);
                 AnimatePlayer();
             }
 
             // Di chuyển phải
-            if (goRight && (playerX + player.Speed) < this.ClientSize.Width - player.Width)
+            if (goRight && (player.X + player.Speed) < this.ClientSize.Width - player.Width)
             {
-                playerX += player.Speed;
-                SetFramePlayer(player.form, Enums.Move.Right);
+                player.X += player.Speed;
+                player.SetFrame(isShot, isTransform, Enums.Move.Right);
                 AnimatePlayer();
             }
 
@@ -241,6 +223,9 @@ namespace DragonBall
                 enemy = new Enemy();
                 CreateEnemy();
             }
+
+            enemy.SetFrame();
+            AnimateEnemy();
             this.Invalidate();
         }
 
@@ -272,129 +257,61 @@ namespace DragonBall
         }     
         private void AnimatePlayer()
         {
-            slowDownFrameRate += 1;
-            if (slowDownFrameRate == maxSlowDownFrameRate) // Giảm FPS của hoạt ảnh nhân vật xuống
+            player.slowDownFPS += 1;
+            if (player.slowDownFPS == player.maxSlowDownFPS) // Giảm FPS của hoạt ảnh nhân vật xuống
             {
-                stepFrame++;
-                slowDownFrameRate = 0;
+                player.stepFrame++;
+                player.slowDownFPS = 0;
             }
-            if (stepFrame > endFrame || stepFrame < startFrame) // Đảm bảo lấy hình trong khoảng index từ startFrame -> endFrame
+            if (player.stepFrame > player.endFrame || player.stepFrame < player.startFrame) // Đảm bảo lấy hình trong khoảng index từ player.startFrame -> player.endFrame
             {
-                stepFrame = startFrame;
+                player.stepFrame = player.startFrame;
             }
-            if (stepFrame == endFrame)
+            if (player.stepFrame == player.endFrame)
             {
                 isShot = false;
                 isTransform = false;
                 isLocked = false;
             }
             if (player.imageMovements.Count != 0)
-                player.Image = Image.FromFile(player.imageMovements[stepFrame]);
+                player.Image = Image.FromFile(player.imageMovements[player.stepFrame]);
         }
         private void AnimateEnemy()
         {
+            if (enemy == null) return;
 
+            enemy.slowDownFPS += 1;
+            Console.WriteLine("SlowDownFPS: " + enemy.slowDownFPS);
+
+            if (enemy.slowDownFPS == enemy.maxSlowDownFPS)
+            {
+                enemy.stepFrame++;
+                enemy.slowDownFPS = 0;
+            }
+
+            if (enemy.slowDownFPS == enemy.maxSlowDownFPS)
+            {
+                enemy.stepFrame++;
+                enemy.slowDownFPS = 0;
+            }
+
+            Console.WriteLine("Enemystep: " + enemy.stepFrame);
+            if (enemy.stepFrame > enemy.endFrame || enemy.stepFrame < enemy.startFrame)
+            {
+                enemy.stepFrame = enemy.startFrame;
+            }
+            if (enemy != null)
+                enemy.Image = Image.FromFile(enemy.imageMovements[enemy.stepFrame]);
         }
         private void CreateEnemy()
         {
-            enemy.imageMovements = Directory.GetFiles("E0", "*.png").ToList();
+            enemy.imageMovements = Directory.GetFiles("assets/enemy0", "*.png").ToList();
             enemy.Image = Image.FromFile(enemy.imageMovements[0]);
 
             enemy.X = this.Width + 50;
-            enemy.Y = new Random().Next(0, this.Height - 200);
+            enemy.Y = new Random().Next(0, this.Height - 250);
         }
-        // Để lựa chọn ảnh nhân vật sẽ được vẽ lên
-        private void SetFramePlayer(int form, Enums.Move status)
-        {
-            if (isShot)
-            {
-                startFrame = 6;
-                endFrame = 8;
-            }
-            else if (player.form == 0 && isTransform)
-            {
-                startFrame = 10;
-                endFrame = 16;
-            }
-            else if (player.form == 0 && status == Enums.Move.Right)
-            {
-                startFrame = 0;
-                endFrame = 2;
-            }
-            else if (player.form == 0 && status == Enums.Move.Left)
-            {
-                startFrame = 3;
-                endFrame = 5;
-            }
 
-            else if (player.form == 1 && isTransform)
-            {
-                startFrame = 10;
-                endFrame = 17;
-            }
-            else if (player.form == 1 && status == Enums.Move.Right)
-            {
-                startFrame = 0;
-                endFrame = 2;
-            }
-            else if (player.form == 1 && status == Enums.Move.Left)
-            {
-                startFrame = 3;
-                endFrame = 5;
-            }
-
-            else if (player.form == 2 && isTransform)
-            {
-                startFrame = 10;
-                endFrame = 20;
-            }
-            else if (player.form == 2 && status == Enums.Move.Right)
-            {
-                startFrame = 0;
-                endFrame = 2;
-            }
-            else if (player.form == 2 && status == Enums.Move.Left)
-            {
-                startFrame = 3;
-                endFrame = 5;
-            }
-
-            else if (player.form == 3 && isTransform)
-            {
-                startFrame = 10;
-                endFrame = 27;
-            }
-            else if (player.form == 3 && status == Enums.Move.Right)
-            {
-                startFrame = 0;
-                endFrame = 2;
-            }
-            else if (player.form == 3 && status == Enums.Move.Left)
-            {
-                startFrame = 3;
-                endFrame = 5;
-            }
-
-            else if (player.form == 4 && isTransform)
-            {
-                startFrame = 10;
-                endFrame = 22;
-            }
-            else if (player.form == 4 && status == Enums.Move.Right)
-            {
-                startFrame = 0;
-                endFrame = 2;
-            }
-            else if (player.form == 4 && status == Enums.Move.Left)
-            {
-                startFrame = 3;
-                endFrame = 5;
-            }
-        }
-        private void SetFrameEnemy(int form)
-        {
-
-        }
         private void DragonBall_KeyDown(object sender, KeyEventArgs e)
         {
             if (isLocked || !isStart) return;
@@ -444,17 +361,17 @@ namespace DragonBall
             }
         }
 
+
         public void StartGame()
         {
+            player = new Player();
+            enemy = new Enemy();
+            bullets = new List<Bullet>();
+            bulletsToRemove = new List<Bullet>();
+
             InitValue();
             this.BackgroundImageLayout = ImageLayout.Stretch;
             this.DoubleBuffered = true;
-
-            // Lấy hết hình trong thư mục Goku (Nằm ở thư mục debug)
-            player.imageMovements = Directory.GetFiles("Goku0", "*.png").ToList();
-
-            // Lấy hình thứ 10 trong thư mục Goku
-            player.Image = Image.FromFile(player.imageMovements[10]);
 
             isStart = true;
 
@@ -478,11 +395,11 @@ namespace DragonBall
         {
             SetNoMove(); // Khóa di chuyển lúc biến hình
             isTransform = true;
-            slowDownFrameRate = 0;
-            stepFrame = -1;
+            player.slowDownFPS = 0;
+            player.stepFrame = -1;
             delayShoot = 0;
             player.form = form;
-            this.delayShootTime = delayShootTime;
+            player.delayShootTime = delayShootTime;
         }
         private void SetNoMove()
         {
@@ -495,20 +412,20 @@ namespace DragonBall
         }
         private void Shooting()
         {
-            if (delayShoot != delayShootTime) return; // Tăng thời gian giữa những lần bắn
+            if (delayShoot != player.delayShootTime) return; // Tăng thời gian giữa những lần bắn
 
             delayShoot = 0;
 
-            Bullet a = new Bullet(playerX + player.Width,
-                                    playerY + player.Height / 2 + 20,
+            Bullet a = new Bullet(player.X + player.Width,
+                                    player.Y + player.Height / 2 + 20,
                                     true);
 
             a.Image = Image.FromFile(player.imageMovements[9]); // Hình đạn
             bullets.Add(a);
 
             isShot = true;
-            slowDownFrameRate = 0;
-            stepFrame = 0;
+            player.slowDownFPS = 0;
+            player.stepFrame = 0;
         }
     }
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Objects.DragonBall
 {
-    public class Bullet
+    internal class Bullet
     {
         public Bullet()
         {
