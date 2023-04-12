@@ -121,10 +121,9 @@ namespace DragonBall
                             Size = new System.Drawing.Size(enemy.Width, enemy.Height)
                         };
 
-                        if (bulletHit.Bounds.IntersectsWith(enemyHit.Bounds) && !bullet.isHit)
+                        if (bulletHit.Bounds.IntersectsWith(enemyHit.Bounds))
                         {
                             enemy.Health--;
-                            bullet.isHit = true;
                             bulletsToRemove.Add(bullet);
                         }
                         if (enemy.Health == 0)
@@ -139,6 +138,7 @@ namespace DragonBall
                 }
             }
 
+            // Vẽ enemy và va chạm với player
             if (enemy.Image != null)
             {
                 Canvas.DrawImage(enemy.Image, enemy.X, enemy.Y, enemy.Width, enemy.Height);
@@ -164,7 +164,7 @@ namespace DragonBall
                     CreateEnemy();
                 }
             }
-
+            // Xóa đạn đá bắn dính
             foreach (var bulletToRemove in bulletsToRemove)
             {
                 bullets.Remove(bulletToRemove);
@@ -302,15 +302,7 @@ namespace DragonBall
                 }
                 else // Bay hết màn hình thì loại nó ra khỏi list bullets
                 {
-                    if (bullets[i].isHit) // Xóa bullets được bắn
-                    {
-                        bullets.RemoveAt(i);
-                        i--;
-                    }
-                    else
-                    {
-                        bullets[i].isMoving = false;
-                    }
+                    bullets[i].isMoving = false;
                 }
             }
 

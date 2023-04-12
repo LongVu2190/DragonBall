@@ -27,7 +27,6 @@ namespace Objects.DragonBall
         public int Width { get; set; } = 50;
         public int Height { get; set; } = 30;
         public bool isMoving { get; set; } = false;
-        public bool isHit { get; set; } = false;
         public int speed { get; set; } = 10;
         ~C_Bullet() { }
     }
