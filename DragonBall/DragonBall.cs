@@ -14,6 +14,10 @@ namespace DragonBall
 {
     public partial class DragonBall : Form
     {
+        List<string> avatars = new List<string>();
+        Image avatar;
+        
+
         C_Player player;
 
         List<C_Bullet> bullets;
@@ -47,6 +51,10 @@ namespace DragonBall
         static extern bool AllocConsole();
         public void StartGame()
         {
+            avatars = Directory.GetFiles("assets/avatars", "*.png").ToList();
+            avatar = Image.FromFile(avatars[0]);
+            Avatar.Image = avatar;
+
             player = new C_Player();
             bullets = new List<C_Bullet>();
             bulletsToRemove = new List<C_Bullet>();
@@ -218,6 +226,8 @@ namespace DragonBall
                 Transformation(4, 6);
                 score++;
             }
+            avatar = Image.FromFile(avatars[player.form]);
+            Avatar.Image = avatar;
 
         }
         private void Moving_Tick(object sender, EventArgs e)

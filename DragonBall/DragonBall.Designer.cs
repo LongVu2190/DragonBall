@@ -29,12 +29,15 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DragonBall));
             this.Moving = new System.Windows.Forms.Timer(this.components);
             this.score_lb = new System.Windows.Forms.Label();
             this.Level = new System.Windows.Forms.Timer(this.components);
             this.Enemy = new System.Windows.Forms.Timer(this.components);
             this.player_health = new System.Windows.Forms.ProgressBar();
             this.enemy_health = new System.Windows.Forms.ProgressBar();
+            this.Avatar = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.Avatar)).BeginInit();
             this.SuspendLayout();
             // 
             // Moving
@@ -64,7 +67,7 @@
             // 
             // player_health
             // 
-            this.player_health.Location = new System.Drawing.Point(112, 62);
+            this.player_health.Location = new System.Drawing.Point(127, 128);
             this.player_health.Maximum = 10;
             this.player_health.Name = "player_health";
             this.player_health.Size = new System.Drawing.Size(189, 29);
@@ -80,6 +83,17 @@
             this.enemy_health.TabIndex = 3;
             this.enemy_health.Value = 2;
             // 
+            // Avatar
+            // 
+            this.Avatar.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.Avatar.Image = ((System.Drawing.Image)(resources.GetObject("Avatar.Image")));
+            this.Avatar.Location = new System.Drawing.Point(9, 12);
+            this.Avatar.Name = "Avatar";
+            this.Avatar.Size = new System.Drawing.Size(100, 145);
+            this.Avatar.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.Avatar.TabIndex = 4;
+            this.Avatar.TabStop = false;
+            // 
             // DragonBall
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -87,6 +101,7 @@
             this.BackgroundImage = global::DragonBall.Properties.Resources._1940_7864_6519v2;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1148, 791);
+            this.Controls.Add(this.Avatar);
             this.Controls.Add(this.enemy_health);
             this.Controls.Add(this.player_health);
             this.Controls.Add(this.score_lb);
@@ -97,6 +112,7 @@
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.DragonBall_Paint);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.DragonBall_KeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.DragonBall_KeyUp);
+            ((System.ComponentModel.ISupportInitialize)(this.Avatar)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -110,6 +126,7 @@
         private System.Windows.Forms.Timer Enemy;
         private System.Windows.Forms.ProgressBar player_health;
         private System.Windows.Forms.ProgressBar enemy_health;
+        private System.Windows.Forms.PictureBox Avatar;
     }
 }
 
