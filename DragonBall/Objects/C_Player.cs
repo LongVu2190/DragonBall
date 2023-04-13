@@ -15,10 +15,10 @@ namespace DragonBall.Objects
         public int delayShootTime { get; set; }
         public C_Player() 
         {
-            Height = 200;
-            Width = 200;
-            Speed = 10;
-            Health = 1;
+            Height = 120;
+            Width = 120;
+            Speed = 8;
+            Health = 10;
             X = 0;
             Y = 0;
             form = 0;

@@ -13,9 +13,9 @@ namespace DragonBall.Objects
         public bool isHit;
         public C_Enemy()
         {
-            Height = 200;
-            Width = 200;
-            Speed = 10;
+            Height = 120;
+            Width = 120;
+            Speed = 7;
             Health = 2;
             form = 0;
             stepFrame = 0;

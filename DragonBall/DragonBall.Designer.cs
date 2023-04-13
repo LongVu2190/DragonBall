@@ -86,7 +86,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::DragonBall.Properties.Resources._1940_7864_6519v2;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(1148, 637);
+            this.ClientSize = new System.Drawing.Size(1148, 791);
             this.Controls.Add(this.enemy_health);
             this.Controls.Add(this.player_health);
             this.Controls.Add(this.score_lb);
