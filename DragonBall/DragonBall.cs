@@ -29,7 +29,7 @@ namespace DragonBall
 
         bool isStart, isEnd, isPause, isLocked;
 
-        int delayShoot;
+        int delayShoot, delaySpamEneny, maxDelaySpamEneny;
         int score;
         int numEnemies;
         int bulletSpeed;
@@ -72,7 +72,9 @@ namespace DragonBall
 
             delayShoot = 0;
             score = 0;
-            numEnemies = 4;
+            numEnemies = 10;
+            delaySpamEneny = 0;
+            maxDelaySpamEneny = 20;
 
             isTransform = false;
             isShot = false;
@@ -84,16 +86,17 @@ namespace DragonBall
             Enemy.Enabled = true;
 
 
-            for (int a = 0; a < numEnemies; a++)
+            for (int a = 0; a < 4; a++)
             {
                 C_Enemy enemy = new C_Enemy();
                 enemy.form = player.form;
                 enemy.SetFrame();
 
                 enemy.X = this.Width + enemy.X;
-                enemy.Y = labelSize + (enemy.Height + 30) * a;
+                enemy.Y = labelSize + (enemy.Height + 40) * a;
                 Enemies.Add(enemy);
             }
+            Player_Progress.SetState(2);
         }
         private void EndGame()
         {
@@ -101,7 +104,7 @@ namespace DragonBall
             Level.Enabled = false;
             Enemy.Enabled = false;
             score = 0;
-            score_lb.Text = score.ToString();
+            Level_Progress.Value = 1;
             isLocked = true;
             isEnd = true;
             if (player.Health == 0)
@@ -171,11 +174,13 @@ namespace DragonBall
                                 {
                                     enemiesToRemove.Add(enemy);
                                     score += 1;
-                                    score_lb.Text = score.ToString();
-
+                                    if (Level_Progress.Value != 5)
+                                    {
+                                        Level_Progress.Value++;
+                                    }
                                 }
                             }
-                            enemy_health.Value = enemy.Health;
+                            Enemy_Progress.Value = enemy.Health;
                         }
                     }
                 }
@@ -203,7 +208,7 @@ namespace DragonBall
                     {
                         enemy.isHit = true;
                         player.Health--;
-                        player_health.Value = player.Health;
+                        Player_Progress.Value = player.Health;
                         enemiesToRemove.Add(enemy);
                     }
                 }
@@ -236,26 +241,31 @@ namespace DragonBall
             if (score == 0)
             {
                 Transformation(0, 3, 30);
+                Level_Progress.Value = 1;
                 score++;
             }
             else if (score == 5)
             {
                 Transformation(1, 4, 28);
+                Level_Progress.Value = 1;
                 score++;
             }
             else if (score == 10)
             {
                 Transformation(2, 5, 26);
+                Level_Progress.Value = 1;
                 score++;
             }
             else if (score == 15)
             {
                 Transformation(3, 6, 24);
+                Level_Progress.Value = 1;
                 score++;
             }
             else if (score == 20)
             {
                 Transformation(4, 8, 22);
+                Level_Progress.Value = 1;
                 score++;
             }
         }
@@ -410,7 +420,14 @@ namespace DragonBall
         }
 
         private void CreateEnemy()
-        {                           
+        {
+            if (delaySpamEneny != maxDelaySpamEneny)
+            {
+                delaySpamEneny++;
+                return;               
+            }
+            delaySpamEneny = 0;
+
             if (Enemies.Count < numEnemies)
             {
                 C_Enemy enemy = new C_Enemy();
@@ -418,7 +435,7 @@ namespace DragonBall
                 enemy.SetFrame();
 
                 enemy.X = this.Width + enemy.X;
-                enemy.Y = new Random().Next(labelSize, this.Height - enemy.Height - 30);
+                enemy.Y = new Random().Next(labelSize, this.Height - enemy.Height - 40);
                 Enemies.Add(enemy);
             }
         }
@@ -519,5 +536,6 @@ namespace DragonBall
                 goDown = false;
             }
         }
+
     }
 }

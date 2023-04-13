@@ -31,12 +31,12 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DragonBall));
             this.Moving = new System.Windows.Forms.Timer(this.components);
-            this.score_lb = new System.Windows.Forms.Label();
             this.Level = new System.Windows.Forms.Timer(this.components);
             this.Enemy = new System.Windows.Forms.Timer(this.components);
-            this.player_health = new System.Windows.Forms.ProgressBar();
-            this.enemy_health = new System.Windows.Forms.ProgressBar();
+            this.Player_Progress = new System.Windows.Forms.ProgressBar();
+            this.Enemy_Progress = new System.Windows.Forms.ProgressBar();
             this.Avatar = new System.Windows.Forms.PictureBox();
+            this.Level_Progress = new System.Windows.Forms.ProgressBar();
             ((System.ComponentModel.ISupportInitialize)(this.Avatar)).BeginInit();
             this.SuspendLayout();
             // 
@@ -44,16 +44,6 @@
             // 
             this.Moving.Interval = 10;
             this.Moving.Tick += new System.EventHandler(this.Moving_Tick);
-            // 
-            // score_lb
-            // 
-            this.score_lb.AutoSize = true;
-            this.score_lb.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.score_lb.Location = new System.Drawing.Point(529, 66);
-            this.score_lb.Name = "score_lb";
-            this.score_lb.Size = new System.Drawing.Size(61, 25);
-            this.score_lb.TabIndex = 1;
-            this.score_lb.Text = "Point";
             // 
             // Level
             // 
@@ -65,23 +55,23 @@
             this.Enemy.Interval = 120;
             this.Enemy.Tick += new System.EventHandler(this.Enemy_Tick);
             // 
-            // player_health
+            // Player_Progress
             // 
-            this.player_health.Location = new System.Drawing.Point(127, 128);
-            this.player_health.Maximum = 10;
-            this.player_health.Name = "player_health";
-            this.player_health.Size = new System.Drawing.Size(189, 29);
-            this.player_health.TabIndex = 2;
-            this.player_health.Value = 10;
+            this.Player_Progress.Location = new System.Drawing.Point(127, 128);
+            this.Player_Progress.Maximum = 10;
+            this.Player_Progress.Name = "Player_Progress";
+            this.Player_Progress.Size = new System.Drawing.Size(189, 29);
+            this.Player_Progress.TabIndex = 2;
+            this.Player_Progress.Value = 10;
             // 
-            // enemy_health
+            // Enemy_Progress
             // 
-            this.enemy_health.Location = new System.Drawing.Point(852, 66);
-            this.enemy_health.Maximum = 2;
-            this.enemy_health.Name = "enemy_health";
-            this.enemy_health.Size = new System.Drawing.Size(189, 29);
-            this.enemy_health.TabIndex = 3;
-            this.enemy_health.Value = 2;
+            this.Enemy_Progress.Location = new System.Drawing.Point(852, 66);
+            this.Enemy_Progress.Maximum = 2;
+            this.Enemy_Progress.Name = "Enemy_Progress";
+            this.Enemy_Progress.Size = new System.Drawing.Size(189, 29);
+            this.Enemy_Progress.TabIndex = 3;
+            this.Enemy_Progress.Value = 2;
             // 
             // Avatar
             // 
@@ -94,16 +84,25 @@
             this.Avatar.TabIndex = 4;
             this.Avatar.TabStop = false;
             // 
+            // Level_Progress
+            // 
+            this.Level_Progress.Location = new System.Drawing.Point(127, 79);
+            this.Level_Progress.Maximum = 5;
+            this.Level_Progress.Name = "Level_Progress";
+            this.Level_Progress.Size = new System.Drawing.Size(189, 29);
+            this.Level_Progress.Step = 1;
+            this.Level_Progress.TabIndex = 5;
+            // 
             // DragonBall
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1148, 791);
+            this.Controls.Add(this.Level_Progress);
             this.Controls.Add(this.Avatar);
-            this.Controls.Add(this.enemy_health);
-            this.Controls.Add(this.player_health);
-            this.Controls.Add(this.score_lb);
+            this.Controls.Add(this.Enemy_Progress);
+            this.Controls.Add(this.Player_Progress);
             this.Name = "DragonBall";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Dragon Ball";
@@ -113,19 +112,18 @@
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.DragonBall_KeyUp);
             ((System.ComponentModel.ISupportInitialize)(this.Avatar)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
         private System.Windows.Forms.Timer Moving;
-        private System.Windows.Forms.Label score_lb;
         private System.Windows.Forms.Timer Level;
         private System.Windows.Forms.Timer Enemy;
-        private System.Windows.Forms.ProgressBar player_health;
-        private System.Windows.Forms.ProgressBar enemy_health;
+        private System.Windows.Forms.ProgressBar Player_Progress;
+        private System.Windows.Forms.ProgressBar Enemy_Progress;
         private System.Windows.Forms.PictureBox Avatar;
+        private System.Windows.Forms.ProgressBar Level_Progress;
     }
 }
 

@@ -20,7 +20,7 @@ namespace DragonBall.Objects
             form = 0;
             stepFrame = 0;
             slowDownFPS = 0;
-            maxSlowDownFPS = 10;
+            maxSlowDownFPS = 3;
             isHit = false;
             imageMovements = Directory.GetFiles("assets/enemy0", "*.png").ToList();
             Image = Image.FromFile(imageMovements[0]);
