@@ -54,7 +54,7 @@ namespace DragonBall
         public void StartGame()
         {
             avatars = Directory.GetFiles("assets/avatars", "*.png").ToList();
-            maps = Directory.GetFiles("assets/maps", "*.png").ToList();
+            maps = Directory.GetFiles("assets/maps", "*.jpg").ToList();
             Avatar.Image = Image.FromFile(avatars[0]);
 
             player = new C_Player();
