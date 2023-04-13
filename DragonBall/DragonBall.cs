@@ -232,7 +232,7 @@ namespace DragonBall
         {
             if (isEnd || !isStart) return;
 
-            if (player.Health == 0 || score == 30 && isStart)
+            if (player.Health == 0 || score == 25 && isStart)
             {
                 isEnd = true;
                 EndGame();
