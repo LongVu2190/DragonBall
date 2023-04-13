@@ -425,7 +425,7 @@ namespace DragonBall
 
         private void Transformation(int form, int bulletSpeed, int delayShootTime)
         {
-            SetNoMove(); // Khóa di chuyển lúc biến hình
+            SetNoMove();
             bullets.Clear();
             isTransform = true;
             player.slowDownFPS = 0;
