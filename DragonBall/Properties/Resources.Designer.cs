@@ -59,15 +59,5 @@ namespace DragonBall.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap _1940_7864_6519v2 {
-            get {
-                object obj = ResourceManager.GetObject("_1940_7864_6519v2", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
     }
 }

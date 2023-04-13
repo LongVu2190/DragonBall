@@ -15,8 +15,9 @@ namespace DragonBall
     public partial class DragonBall : Form
     {
         List<string> avatars = new List<string>();
-        Image avatar;
-        
+        List<string> maps = new List<string>();
+
+        static int labelSize = 150; // Vùng để chứa thanh máu
 
         C_Player player;
 
@@ -26,10 +27,11 @@ namespace DragonBall
         List<C_Enemy> Enemies;
         List<C_Enemy> enemiesToRemove;
 
-        bool isStart, isEnd, isLocked;
+        bool isStart, isEnd, isPause, isLocked;
 
         int delayShoot;
         int score;
+        int numEnemies;
 
         bool goLeft, goRight, goUp, goDown;
 
@@ -52,31 +54,45 @@ namespace DragonBall
         public void StartGame()
         {
             avatars = Directory.GetFiles("assets/avatars", "*.png").ToList();
-            avatar = Image.FromFile(avatars[0]);
-            Avatar.Image = avatar;
+            maps = Directory.GetFiles("assets/maps", "*.png").ToList();
+            Avatar.Image = Image.FromFile(avatars[0]);
 
             player = new C_Player();
+            player.Y = labelSize;
             bullets = new List<C_Bullet>();
             bulletsToRemove = new List<C_Bullet>();
             Enemies = new List<C_Enemy>();
             enemiesToRemove = new List<C_Enemy>();
 
+            isStart = true;
             isEnd = false;
+            isPause = false;
+            isLocked = false;
 
             delayShoot = 0;
             score = 0;
-            isLocked = false;
+            numEnemies = 4;
 
             isTransform = false;
             isShot = false;
             this.BackgroundImageLayout = ImageLayout.Stretch;
             this.DoubleBuffered = true;
 
-            isStart = true;
-
             Moving.Enabled = true;
             Level.Enabled = true;
             Enemy.Enabled = true;
+
+
+            for (int a = 0; a < numEnemies; a++)
+            {
+                C_Enemy enemy = new C_Enemy();
+                enemy.form = player.form;
+                enemy.SetFrame();
+
+                enemy.X = this.Width + enemy.X;
+                enemy.Y = labelSize + (enemy.Height + 30) * a;
+                Enemies.Add(enemy);
+            }
         }
         private void EndGame()
         {
@@ -94,6 +110,21 @@ namespace DragonBall
 
             EndGame end = new EndGame(this);
             end.ShowDialog();
+        }
+        private void PauseGame()
+        {
+            if (!isPause)
+            {
+                Moving.Enabled = false;
+                Level.Enabled = false;
+                Enemy.Enabled = false;
+                isPause = true;
+                return;
+            }
+            Moving.Enabled = true;
+            Level.Enabled = true;
+            Enemy.Enabled = true;
+            isPause = false;
         }
         private void DragonBall_Paint(object sender, PaintEventArgs e)
         {
@@ -226,9 +257,6 @@ namespace DragonBall
                 Transformation(4, 6);
                 score++;
             }
-            avatar = Image.FromFile(avatars[player.form]);
-            Avatar.Image = avatar;
-
         }
         private void Moving_Tick(object sender, EventArgs e)
         {
@@ -256,7 +284,7 @@ namespace DragonBall
             }
 
             // Di chuyển lên
-            if (goUp && (player.Y - player.Speed) > 0)
+            if (goUp && (player.Y - player.Speed) > labelSize)
             {
                 player.Y -= player.Speed;
                 player.SetFrame(isShot, isTransform, Enums.Move.Right);
@@ -296,7 +324,7 @@ namespace DragonBall
         {
             if (isTransform || isEnd || !isStart) return;
 
-            CreateEnemy(4);
+            CreateEnemy();
 
             foreach (C_Enemy enemy in Enemies)
             {
@@ -380,8 +408,8 @@ namespace DragonBall
             }
         }
 
-        private void CreateEnemy(int numEnemies)
-        {
+        private void CreateEnemy()
+        {                           
             if (Enemies.Count < numEnemies)
             {
                 C_Enemy enemy = new C_Enemy();
@@ -389,23 +417,10 @@ namespace DragonBall
                 enemy.SetFrame();
 
                 enemy.X = this.Width + enemy.X;
-                enemy.Y = new Random().Next(0, this.Height - enemy.Height - 30);
-
-                for (int i = 0; i < Enemies.Count; i++)
-                {
-                    bool check = false;
-                    while (enemy.Y > Enemies[i].Y - enemy.Height && enemy.Y < Enemies[i].Y + enemy.Height)
-                    {
-                        check = true;
-                        enemy.Y = new Random().Next(0, this.Height - enemy.Height - 30);
-                    }
-                    if (check) i = -1;
-                }
+                enemy.Y = new Random().Next(labelSize, this.Height - enemy.Height - 30);
                 Enemies.Add(enemy);
             }
-           
         }
-
 
         private void Transformation(int form, int delayShootTime)
         {
@@ -417,6 +432,9 @@ namespace DragonBall
             delayShoot = 0;
             player.form = form;
             player.delayShootTime = delayShootTime;
+
+            Avatar.Image = Image.FromFile(avatars[player.form]);
+            this.BackgroundImage = Image.FromFile(maps[player.form]);
         }
         private void SetNoMove()
         {
@@ -472,6 +490,10 @@ namespace DragonBall
             if (e.KeyCode == Keys.E && !isTransform)
             {
                 EndGame();
+            }
+            if (e.KeyCode == Keys.C && !isTransform)
+            {
+                PauseGame();
             }
         }
         private void DragonBall_KeyUp(object sender, KeyEventArgs e)
