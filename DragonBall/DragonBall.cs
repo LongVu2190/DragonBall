@@ -32,6 +32,7 @@ namespace DragonBall
         int delayShoot;
         int score;
         int numEnemies;
+        int bulletSpeed;
 
         bool goLeft, goRight, goUp, goDown;
 
@@ -234,27 +235,27 @@ namespace DragonBall
 
             if (score == 0)
             {
-                Transformation(0, 15);
+                Transformation(0, 3, 30);
                 score++;
             }
             else if (score == 5)
             {
-                Transformation(1, 13);
+                Transformation(1, 4, 28);
                 score++;
             }
             else if (score == 10)
             {
-                Transformation(2, 10);
+                Transformation(2, 5, 26);
                 score++;
             }
             else if (score == 15)
             {
-                Transformation(3, 8);
+                Transformation(3, 6, 24);
                 score++;
             }
             else if (score == 20)
             {
-                Transformation(4, 6);
+                Transformation(4, 8, 22);
                 score++;
             }
         }
@@ -422,7 +423,7 @@ namespace DragonBall
             }
         }
 
-        private void Transformation(int form, int delayShootTime)
+        private void Transformation(int form, int bulletSpeed, int delayShootTime)
         {
             SetNoMove(); // Khóa di chuyển lúc biến hình
             bullets.Clear();
@@ -430,8 +431,10 @@ namespace DragonBall
             player.slowDownFPS = 0;
             player.stepFrame = -1;
             delayShoot = 0;
+
             player.form = form;
             player.delayShootTime = delayShootTime;
+            this.bulletSpeed = bulletSpeed;
 
             Avatar.Image = Image.FromFile(avatars[player.form]);
             this.BackgroundImage = Image.FromFile(maps[player.form]);
@@ -453,7 +456,8 @@ namespace DragonBall
 
             C_Bullet a = new C_Bullet(player.X + player.Width,
                                     player.Y + player.Height / 2 + 20,
-                                    true);
+                                    bulletSpeed,
+                                    true); ;
 
             a.Image = Image.FromFile(player.imageMovements[9]); // Hình đạn
             bullets.Add(a);

@@ -15,13 +15,13 @@ namespace Objects.DragonBall
             isMoving = false;
             speed = 10;
         }
-        public C_Bullet(int x, int y, bool isMoving)
+        public C_Bullet(int x, int y, int speed, bool isMoving)
         {
             X = x;
             Y = y;
             Width = 30;
             Height = 14;
-            speed = 8;
+            this.speed = speed;
             this.isMoving = isMoving;
         }
 

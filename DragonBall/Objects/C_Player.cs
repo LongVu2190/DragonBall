@@ -25,7 +25,7 @@ namespace DragonBall.Objects
             stepFrame = 0;
             delayShootTime = 15;
             maxSlowDownFPS = 0;
-            maxSlowDownFPS = 6;
+            maxSlowDownFPS = 10;
             imageMovements = Directory.GetFiles("assets/player0", "*.png").ToList();
             Image = Image.FromFile(imageMovements[10]);
         }
