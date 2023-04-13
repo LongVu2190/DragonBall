@@ -93,6 +93,7 @@ namespace DragonBall
 
             if (isEnd)
             {
+                Console.WriteLine("1");
                 EndGame();
             }
 
@@ -186,7 +187,7 @@ namespace DragonBall
         {
             if (isEnd || !isStart) return;
 
-            if (player.Health == 0 || score == 30)
+            if (player.Health == 0 || score == 30 && isStart)
             {
                 isEnd = true;
                 EndGame();
@@ -291,9 +292,9 @@ namespace DragonBall
             {
                 enemy.X -= player.Speed;
 
-                if (enemy.X + 200 < 0)
+                if (enemy.X + enemy.Width < 0)
                 {
-                    Enemies.Remove(enemy);
+                    enemiesToRemove.Add(enemy);
                 }
                 enemy.SetFrame();
                 AnimateEnemy();
@@ -377,8 +378,8 @@ namespace DragonBall
                 enemy.form = player.form;
                 enemy.SetFrame();
 
-                enemy.X = this.Width + 50;
-                enemy.Y = new Random().Next(0, this.Height - 250);
+                enemy.X = this.Width + enemy.X;
+                enemy.Y = new Random().Next(0, this.Height - enemy.Height - 30);
 
                 for (int i = 0; i < Enemies.Count; i++)
                 {
@@ -386,7 +387,7 @@ namespace DragonBall
                     while (enemy.Y > Enemies[i].Y - enemy.Height && enemy.Y < Enemies[i].Y + enemy.Height)
                     {
                         check = true;
-                        enemy.Y = new Random().Next(0, this.Height - enemy.Y);
+                        enemy.Y = new Random().Next(0, this.Height - enemy.Height - 30);
                     }
                     if (check) i = -1;
                 }
