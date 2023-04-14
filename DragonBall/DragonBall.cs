@@ -19,12 +19,14 @@ namespace DragonBall
 
         static int labelSize = 150; // Vùng để chứa thanh máu
 
-        C_Player player;
+        C_Boss boss;
+        private List<C_Bullet> bossBullets;
 
+        C_Player player;
         List<C_Bullet> bullets;
         List<C_Bullet> bulletsToRemove;
 
-        List<C_Enemy> Enemies;
+        List<C_Enemy> enemies;
         List<C_Enemy> enemiesToRemove;
 
         bool isStart, isEnd, isPause, isLocked;
@@ -36,7 +38,7 @@ namespace DragonBall
 
         bool goLeft, goRight, goUp, goDown;
 
-        bool isTransform, isShot;
+        bool isTransform, isShot, isBoss;
 
         public DragonBall()
         {
@@ -62,13 +64,14 @@ namespace DragonBall
             player.Y = labelSize;
             bullets = new List<C_Bullet>();
             bulletsToRemove = new List<C_Bullet>();
-            Enemies = new List<C_Enemy>();
+            enemies = new List<C_Enemy>();
             enemiesToRemove = new List<C_Enemy>();
 
             isStart = true;
             isEnd = false;
             isPause = false;
             isLocked = false;
+            isBoss = false;
 
             delayShoot = 0;
             score = 0;
@@ -81,10 +84,11 @@ namespace DragonBall
             this.BackgroundImageLayout = ImageLayout.Stretch;
             this.DoubleBuffered = true;
 
-            Moving.Enabled = true;
-            Level.Enabled = true;
-            Enemy.Enabled = true;
+            Moving_Timer.Enabled = true;
+            Level_Timer.Enabled = true;
+            Enemy_Timer.Enabled = true;
 
+            Enemy_Progress.Maximum = 2;
 
             for (int a = 0; a < 4; a++)
             {
@@ -94,19 +98,22 @@ namespace DragonBall
 
                 enemy.X = this.Width + enemy.X;
                 enemy.Y = labelSize + (enemy.Height + 40) * a;
-                Enemies.Add(enemy);
+                enemies.Add(enemy);
             }
             Player_Progress.SetState(2);
         }
         private void EndGame()
         {
-            Moving.Enabled = false;
-            Level.Enabled = false;
-            Enemy.Enabled = false;
+            Moving_Timer.Enabled = false;
+            Level_Timer.Enabled = false;
+            Enemy_Timer.Enabled = false;
+            Boss_Timer.Enabled = false;
             score = 0;
             Level_Progress.Value = 1;
             isLocked = true;
             isEnd = true;
+            bossBullets.Clear();
+
             if (player.Health == 0)
                 MessageBox.Show("You lose", "Notification");
             else
@@ -119,75 +126,123 @@ namespace DragonBall
         {
             if (!isPause)
             {
-                Moving.Enabled = false;
-                Level.Enabled = false;
-                Enemy.Enabled = false;
+                Moving_Timer.Enabled = false;
+                Level_Timer.Enabled = false;
+                Enemy_Timer.Enabled = false;
+                Boss_Timer.Enabled = false;
                 isPause = true;
                 return;
             }
-            Moving.Enabled = true;
-            Level.Enabled = true;
-            Enemy.Enabled = true;
+            Moving_Timer.Enabled = true;
+            Level_Timer.Enabled = true;
+            Enemy_Timer.Enabled = true;
+            if (isBoss)
+                Boss_Timer.Enabled = true;
             isPause = false;
         }
         private void DragonBall_Paint(object sender, PaintEventArgs e)
         {
-            if (!isStart) return;
-
-            if (isEnd)
-            {
-                Console.WriteLine("1");
-                EndGame();
-            }
-
             Graphics Canvas = e.Graphics;
+
+            if (!isStart || isEnd)
+            {
+                return;
+            }
+            
             Canvas.DrawImage(player.Image, player.X, player.Y, player.Width, player.Height);
+            if (isBoss)
+            {
+                Canvas.DrawImage(boss.Image, boss.X, boss.Y, boss.Width, boss.Height);
+            }
 
             if (bullets == null) return;
 
             // Vẽ đạn
             foreach (var bullet in bullets)
             {
-                if (bullet.isMoving)
+                if (bullet.X + bullet.Width >= this.ClientSize.Width)
+                {
+                    bulletsToRemove.Add(bullet);
+                }
+                Canvas.DrawImage(bullet.Image, bullet.X, bullet.Y, bullet.Width, bullet.Height);
+                PictureBox bulletHit = new PictureBox()
+                {
+                    Location = new System.Drawing.Point(bullet.X, bullet.Y),
+                    Size = new System.Drawing.Size(bullet.Width, bullet.Height)
+                };
+                if (isBoss)
+                {
+                    PictureBox bossHit = new PictureBox()
+                    {
+                        Location = new System.Drawing.Point(boss.X, boss.Y),
+                        Size = new System.Drawing.Size(boss.Width, boss.Height)
+                    };
+                    if (bulletHit.Bounds.IntersectsWith(bossHit.Bounds))
+                    {
+                        Enemy_Progress.Value--;
+                        bulletsToRemove.Add(bullet);
+                    }
+                }
+                // Tạo 1 biến picturebox tạm để xài hàm IntersectWith
+                foreach (C_Enemy enemy in enemies)
+                {
+                    if (enemy != null)
+                    {
+                        PictureBox enemyHit = new PictureBox()
+                        {
+                            Location = new System.Drawing.Point(enemy.X, enemy.Y),
+                            Size = new System.Drawing.Size(enemy.Width, enemy.Height)
+                        };
+                        if (bulletHit.Bounds.IntersectsWith(enemyHit.Bounds))
+                        {
+                            enemy.Health--;
+                            bulletsToRemove.Add(bullet);
+                            if (enemy.Health == 0)
+                            {
+                                enemiesToRemove.Add(enemy);
+                                score += 1;
+                                if (Level_Progress.Value != 5)
+                                {
+                                    Level_Progress.Value++;
+                                }
+                            }
+                        }
+                        Enemy_Progress.Value = enemy.Health;
+                    }
+
+                }
+            }
+
+            if (bossBullets != null)
+            {
+                foreach (var bullet in bossBullets)
                 {
                     Canvas.DrawImage(bullet.Image, bullet.X, bullet.Y, bullet.Width, bullet.Height);
+
                     PictureBox bulletHit = new PictureBox()
                     {
                         Location = new System.Drawing.Point(bullet.X, bullet.Y),
                         Size = new System.Drawing.Size(bullet.Width, bullet.Height)
                     };
-                    // Tạo 1 biến picturebox tạm để xài hàm IntersectWith
-                    foreach (C_Enemy enemy in Enemies)
+
+                    PictureBox playerHit = new PictureBox()
                     {
-                        if (enemy != null)
-                        {
-                            PictureBox enemyHit = new PictureBox()
-                            {
-                                Location = new System.Drawing.Point(enemy.X, enemy.Y),
-                                Size = new System.Drawing.Size(enemy.Width, enemy.Height)
-                            };
-                            if (bulletHit.Bounds.IntersectsWith(enemyHit.Bounds))
-                            {
-                                enemy.Health--;
-                                bulletsToRemove.Add(bullet);
-                                if (enemy.Health == 0)
-                                {
-                                    enemiesToRemove.Add(enemy);
-                                    score += 1;
-                                    if (Level_Progress.Value != 5)
-                                    {
-                                        Level_Progress.Value++;
-                                    }
-                                }
-                            }
-                            Enemy_Progress.Value = enemy.Health;
-                        }
+                        Location = new Point(player.X, player.Y),
+                        Size = new Size(player.Width, player.Height)
+                    };
+                    if (bulletHit.Bounds.IntersectsWith(playerHit.Bounds) && !bullet.isHit)
+                    {
+                        bullet.isHit = true;
+                        bulletsToRemove.Add(bullet);
+                        player.Health--;
+                        Player_Progress.Value--;
                     }
                 }
+
             }
 
-            // Vẽ enemy và va chạm với player
-            foreach (C_Enemy enemy in Enemies)
+            // Enemy và va chạm với player
+            foreach (C_Enemy enemy in enemies)
             {
                 Canvas.DrawImage(enemy.Image, enemy.X, enemy.Y, enemy.Width, enemy.Height);
                 if (enemy.Image != null)
@@ -214,25 +269,33 @@ namespace DragonBall
                 }
             }
 
-            // Xóa đạn đã bắn dính
+            //Xóa đạn đã bắn dính
             foreach (var bulletToRemove in bulletsToRemove)
             {
                 bullets.Remove(bulletToRemove);
+                if (isBoss && bossBullets.Count != 0)
+                    bossBullets.Remove(bulletToRemove);
             }
 
             foreach (C_Enemy enemyToRemove in enemiesToRemove)
             {
-                Enemies.Remove(enemyToRemove);
+                enemies.Remove(enemyToRemove);
             }
 
         }
 
         // Nếu đủ score thì biến hình lên cấp
-        private void Level_Tick(object sender, EventArgs e)
+        private void Level_Timer_Tick(object sender, EventArgs e)
         {
             if (isEnd || !isStart) return;
 
-            if (player.Health == 0 || score == 25 && isStart)
+            if (isBoss && Enemy_Progress.Value == 0)
+            {
+                isEnd = true;
+                EndGame();
+            }
+
+            if (player.Health == 0 && isStart)
             {
                 isEnd = true;
                 EndGame();
@@ -266,10 +329,11 @@ namespace DragonBall
             {
                 Transformation(4, 8, 22);
                 Level_Progress.Value = 1;
+                CreateBoss();
                 score++;
             }
         }
-        private void Moving_Tick(object sender, EventArgs e)
+        private void Moving_Timer_Tick(object sender, EventArgs e)
         {
             if (isEnd || !isStart) return;
 
@@ -280,7 +344,7 @@ namespace DragonBall
 
             if (bullets != null) // Vẽ đạn nếu list đạn không rỗng
             {
-                AnimateBullet();
+                AnimatePlayerBullet();
             }
 
             if (isTransform)
@@ -331,15 +395,15 @@ namespace DragonBall
 
             this.Invalidate();
         }
-        private void Enemy_Tick(object sender, EventArgs e)
+        private void Enemy_Timer_Tick(object sender, EventArgs e)
         {
-            if (isTransform || isEnd || !isStart) return;
+            if (isTransform || isEnd || !isStart || isBoss) return;
 
             CreateEnemy();
 
-            foreach (C_Enemy enemy in Enemies)
+            foreach (C_Enemy enemy in enemies)
             {
-                enemy.X -= player.Speed;
+                enemy.X -= enemy.Speed;
 
                 if (enemy.X + enemy.Width < 0)
                 {
@@ -350,30 +414,55 @@ namespace DragonBall
                 this.Invalidate();
             }
         }
-
-        private void AnimateBullet()
+        private void Boss_Timer_Tick(object sender, EventArgs e)
         {
-            if (bullets == null) return;
+            // reverse direction if the boss reaches top or bottom of the screen
+            boss.Y += boss.Direction * 10;
 
-            for (int i = 0; i < bullets.Count; i++)
+            if (boss.Y < labelSize || boss.Y > this.Height - boss.Height - 20) boss.Direction *= -1;
+
+            if (new Random().Next(0, 100) < 15)
             {
-                if (bullets[i].X + bullets[i].Width < this.ClientSize.Width) // Bay trong màn hình
+                BossShooting();
+            }
+            AnimateBossBullet();
+        }
+
+        private void AnimatePlayerBullet()
+        {
+            if (bullets != null)
+            {
+                for (int i = 0; i < bullets.Count; i++)
                 {
-                    bullets[i].X += bullets[i].speed;
-                    bullets[i].isMoving = true;
-                }
-                else // Bay hết màn hình thì loại nó ra khỏi list bullets
-                {
-                    bullets[i].isMoving = false;
+                    if (bullets[i].X + bullets[i].Width < this.ClientSize.Width) // Bay trong màn hình
+                    {
+                        bullets[i].X += bullets[i].speed;
+                    }
                 }
             }
-
+        }
+        private void AnimateBossBullet()
+        {
+            if (bossBullets != null)
+            {
+                for (int i = 0; i < bossBullets.Count; i++)
+                {
+                    if (bossBullets[i].X + bossBullets[i].Width < this.ClientSize.Width)
+                    {
+                        bossBullets[i].X -= bossBullets[i].speed;
+                    }
+                }
+            }
         }
         private void AnimatePlayer()
         {
             player.slowDownFPS += 1;
             if (player.slowDownFPS == player.maxSlowDownFPS) // Giảm FPS của hoạt ảnh nhân vật xuống
             {
+                if (isBoss)
+                {
+                    boss.stepFrame++;
+                }
                 player.stepFrame++;
                 player.slowDownFPS = 0;
             }
@@ -389,10 +478,19 @@ namespace DragonBall
             }
             if (player.imageMovements.Count != 0)
                 player.Image = Image.FromFile(player.imageMovements[player.stepFrame]);
+
+            if (isBoss && boss.imageMovements.Count != 0)
+            {
+                if (boss.stepFrame > 2 || boss.stepFrame < 0) // Đảm bảo lấy hình trong khoảng index từ player.startFrame -> player.endFrame
+                {
+                    boss.stepFrame = 0;
+                }
+                boss.Image = Image.FromFile(boss.imageMovements[boss.stepFrame]);
+            }
         }
         private void AnimateEnemy()
         {
-            foreach (C_Enemy enemy in Enemies)
+            foreach (C_Enemy enemy in enemies)
             {
                 if (enemy == null) return;
 
@@ -424,11 +522,11 @@ namespace DragonBall
             if (delaySpamEneny != maxDelaySpamEneny)
             {
                 delaySpamEneny++;
-                return;               
+                return;
             }
             delaySpamEneny = 0;
 
-            if (Enemies.Count < numEnemies)
+            if (enemies.Count < numEnemies)
             {
                 C_Enemy enemy = new C_Enemy();
                 enemy.form = player.form;
@@ -436,8 +534,22 @@ namespace DragonBall
 
                 enemy.X = this.Width + enemy.X;
                 enemy.Y = new Random().Next(labelSize, this.Height - enemy.Height - 40);
-                Enemies.Add(enemy);
+                enemies.Add(enemy);
             }
+        }
+        private void CreateBoss()
+        {      
+            isBoss = true;
+            enemies.Clear();
+            boss = new C_Boss();
+            bossBullets = new List<C_Bullet>();
+
+            boss.X = this.Width - boss.Width;
+            boss.Y = labelSize;
+            Boss_Timer.Enabled = true;
+
+            Enemy_Progress.Maximum = 20;
+            Enemy_Progress.Value = 20;
         }
 
         private void Transformation(int form, int bulletSpeed, int delayShootTime)
@@ -482,6 +594,17 @@ namespace DragonBall
             isShot = true;
             player.slowDownFPS = 0;
             player.stepFrame = 0;
+        }
+        private void BossShooting()
+        {
+            C_Bullet a = new C_Bullet(boss.X,
+                                   boss.Y + 150,
+                                   bulletSpeed,
+                                   true); ;
+
+            a.Image = Image.FromFile(boss.imageMovements[3]); // Hình đạn
+            a.speed = 20;
+            bossBullets.Add(a);
         }
 
         private void DragonBall_KeyDown(object sender, KeyEventArgs e)

@@ -30,30 +30,31 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DragonBall));
-            this.Moving = new System.Windows.Forms.Timer(this.components);
-            this.Level = new System.Windows.Forms.Timer(this.components);
-            this.Enemy = new System.Windows.Forms.Timer(this.components);
+            this.Moving_Timer = new System.Windows.Forms.Timer(this.components);
+            this.Level_Timer = new System.Windows.Forms.Timer(this.components);
+            this.Enemy_Timer = new System.Windows.Forms.Timer(this.components);
             this.Player_Progress = new System.Windows.Forms.ProgressBar();
             this.Enemy_Progress = new System.Windows.Forms.ProgressBar();
             this.Avatar = new System.Windows.Forms.PictureBox();
             this.Level_Progress = new System.Windows.Forms.ProgressBar();
+            this.Boss_Timer = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.Avatar)).BeginInit();
             this.SuspendLayout();
             // 
-            // Moving
+            // Moving_Timer
             // 
-            this.Moving.Interval = 10;
-            this.Moving.Tick += new System.EventHandler(this.Moving_Tick);
+            this.Moving_Timer.Interval = 10;
+            this.Moving_Timer.Tick += new System.EventHandler(this.Moving_Timer_Tick);
             // 
-            // Level
+            // Level_Timer
             // 
-            this.Level.Interval = 20;
-            this.Level.Tick += new System.EventHandler(this.Level_Tick);
+            this.Level_Timer.Interval = 20;
+            this.Level_Timer.Tick += new System.EventHandler(this.Level_Timer_Tick);
             // 
-            // Enemy
+            // Enemy_Timer
             // 
-            this.Enemy.Interval = 120;
-            this.Enemy.Tick += new System.EventHandler(this.Enemy_Tick);
+            this.Enemy_Timer.Interval = 120;
+            this.Enemy_Timer.Tick += new System.EventHandler(this.Enemy_Timer_Tick);
             // 
             // Player_Progress
             // 
@@ -93,6 +94,10 @@
             this.Level_Progress.Step = 1;
             this.Level_Progress.TabIndex = 5;
             // 
+            // Boss_Timer
+            // 
+            this.Boss_Timer.Tick += new System.EventHandler(this.Boss_Timer_Tick);
+            // 
             // DragonBall
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -117,13 +122,14 @@
 
         #endregion
 
-        private System.Windows.Forms.Timer Moving;
-        private System.Windows.Forms.Timer Level;
-        private System.Windows.Forms.Timer Enemy;
+        private System.Windows.Forms.Timer Moving_Timer;
+        private System.Windows.Forms.Timer Level_Timer;
+        private System.Windows.Forms.Timer Enemy_Timer;
         private System.Windows.Forms.ProgressBar Player_Progress;
         private System.Windows.Forms.ProgressBar Enemy_Progress;
         private System.Windows.Forms.PictureBox Avatar;
         private System.Windows.Forms.ProgressBar Level_Progress;
+        private System.Windows.Forms.Timer Boss_Timer;
     }
 }
 

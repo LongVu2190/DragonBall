@@ -12,7 +12,6 @@ namespace Objects.DragonBall
     {
         public C_Bullet()
         {
-            isMoving = false;
             speed = 10;
         }
         public C_Bullet(int x, int y, int speed, bool isMoving)
@@ -22,7 +21,7 @@ namespace Objects.DragonBall
             Width = 30;
             Height = 14;
             this.speed = speed;
-            this.isMoving = isMoving;
+            isHit = false;
         }
 
         public Image Image { get; set; }
@@ -30,8 +29,8 @@ namespace Objects.DragonBall
         public int Y { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
-        public bool isMoving { get; set; }
         public int speed { get; set; }
+        public bool isHit { get; set; }
         ~C_Bullet() { }
     }
 }

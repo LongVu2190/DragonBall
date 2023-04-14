@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Custom\ProgressBar.cs" />
     <Compile Include="Objects\A_Object.cs" />
+    <Compile Include="Objects\C_Boss.cs" />
     <Compile Include="Objects\C_Bullet.cs" />
     <Compile Include="DragonBall.cs">
       <SubType>Form</SubType>
