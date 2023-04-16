@@ -38,7 +38,9 @@
             this.Avatar = new System.Windows.Forms.PictureBox();
             this.Level_Progress = new System.Windows.Forms.ProgressBar();
             this.Boss_Timer = new System.Windows.Forms.Timer(this.components);
+            this.Boss_PBox = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.Avatar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Boss_PBox)).BeginInit();
             this.SuspendLayout();
             // 
             // Moving_Timer
@@ -67,7 +69,7 @@
             // 
             // Enemy_Progress
             // 
-            this.Enemy_Progress.Location = new System.Drawing.Point(852, 66);
+            this.Enemy_Progress.Location = new System.Drawing.Point(826, 128);
             this.Enemy_Progress.Maximum = 2;
             this.Enemy_Progress.Name = "Enemy_Progress";
             this.Enemy_Progress.Size = new System.Drawing.Size(189, 29);
@@ -98,12 +100,25 @@
             // 
             this.Boss_Timer.Tick += new System.EventHandler(this.Boss_Timer_Tick);
             // 
+            // Boss_PBox
+            // 
+            this.Boss_PBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.Boss_PBox.Image = ((System.Drawing.Image)(resources.GetObject("Boss_PBox.Image")));
+            this.Boss_PBox.Location = new System.Drawing.Point(1036, 12);
+            this.Boss_PBox.Name = "Boss_PBox";
+            this.Boss_PBox.Size = new System.Drawing.Size(100, 145);
+            this.Boss_PBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.Boss_PBox.TabIndex = 6;
+            this.Boss_PBox.TabStop = false;
+            this.Boss_PBox.Visible = false;
+            // 
             // DragonBall
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1148, 791);
+            this.Controls.Add(this.Boss_PBox);
             this.Controls.Add(this.Level_Progress);
             this.Controls.Add(this.Avatar);
             this.Controls.Add(this.Enemy_Progress);
@@ -116,6 +131,7 @@
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.DragonBall_KeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.DragonBall_KeyUp);
             ((System.ComponentModel.ISupportInitialize)(this.Avatar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Boss_PBox)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -130,6 +146,7 @@
         private System.Windows.Forms.PictureBox Avatar;
         private System.Windows.Forms.ProgressBar Level_Progress;
         private System.Windows.Forms.Timer Boss_Timer;
+        private System.Windows.Forms.PictureBox Boss_PBox;
     }
 }
 

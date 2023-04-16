@@ -101,6 +101,7 @@ namespace DragonBall
                 enemies.Add(enemy);
             }
             Player_Progress.SetState(2);
+            Enemy_Progress.SetState(2);
         }
         private void EndGame()
         {
@@ -108,11 +109,15 @@ namespace DragonBall
             Level_Timer.Enabled = false;
             Enemy_Timer.Enabled = false;
             Boss_Timer.Enabled = false;
+
+            Enemy_Progress.Value = 0;
             score = 0;
             Level_Progress.Value = 1;
             isLocked = true;
             isEnd = true;
             bossBullets.Clear();
+
+            Invalidate();
 
             if (player.Health == 0)
                 MessageBox.Show("You lose", "Notification");
@@ -181,6 +186,7 @@ namespace DragonBall
                     {
                         Enemy_Progress.Value--;
                         bulletsToRemove.Add(bullet);
+                        score++;
                     }
                 }
                 // Tạo 1 biến picturebox tạm để xài hàm IntersectWith
@@ -207,7 +213,8 @@ namespace DragonBall
                                 }
                             }
                         }
-                        Enemy_Progress.Value = enemy.Health;
+                        if (enemy.Health >= 0)
+                            Enemy_Progress.Value = enemy.Health;
                     }
 
                 }
@@ -327,9 +334,13 @@ namespace DragonBall
             }
             else if (score == 20)
             {
-                Transformation(4, 8, 22);
                 Level_Progress.Value = 1;
                 CreateBoss();
+                score++;
+            }
+            else if (score == 25)
+            {
+                Transformation(4, 8, 22);
                 score++;
             }
         }
@@ -416,6 +427,7 @@ namespace DragonBall
         }
         private void Boss_Timer_Tick(object sender, EventArgs e)
         {
+            if (isTransform) return;
             // reverse direction if the boss reaches top or bottom of the screen
             boss.Y += boss.Direction * 10;
 
@@ -538,7 +550,10 @@ namespace DragonBall
             }
         }
         private void CreateBoss()
-        {      
+        {
+            Boss_PBox.Visible = true;
+            Enemy_Progress.Size = new Size(300, 29);
+            Enemy_Progress.Location = new Point(700, 128);
             isBoss = true;
             enemies.Clear();
             boss = new C_Boss();
@@ -550,6 +565,8 @@ namespace DragonBall
 
             Enemy_Progress.Maximum = 20;
             Enemy_Progress.Value = 20;
+
+            Invalidate();
         }
 
         private void Transformation(int form, int bulletSpeed, int delayShootTime)
