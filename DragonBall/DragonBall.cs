@@ -586,7 +586,15 @@ namespace DragonBall
             delayShoot = 0;
             
             player.form = form;
-            Enemy_Progress.Maximum = player.form + 2;
+           
+            if (isBoss)
+            {
+                Enemy_Progress.Maximum = boss.Health;
+            }
+            else
+            {
+                Enemy_Progress.Maximum = player.form + 2;
+            }
             player.delayShootTime = delayShootTime;
             this.bulletSpeed = bulletSpeed;
 
