@@ -243,8 +243,12 @@ namespace DragonBall
                     {
                         bullet.isHit = true;
                         bulletsToRemove.Add(bullet);
-                        player.Health--;
-                        Player_Progress.Value--;
+                        if (player.Health > 0)
+                        {
+                            player.Health--;
+                            Player_Progress.Value--;
+                        }
+                            
                     }
                 }
 
