@@ -584,8 +584,9 @@ namespace DragonBall
             player.slowDownFPS = 0;
             player.stepFrame = -1;
             delayShoot = 0;
-            Enemy_Progress.Maximum = player.form + 2;
+            
             player.form = form;
+            Enemy_Progress.Maximum = player.form + 2;
             player.delayShootTime = delayShootTime;
             this.bulletSpeed = bulletSpeed;
 
