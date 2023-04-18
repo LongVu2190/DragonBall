@@ -186,7 +186,7 @@ namespace DragonBall
                     };
                     if (bulletHit.Bounds.IntersectsWith(bossHit.Bounds))
                     {
-                        Enemy_Progress.Value--;
+                        Enemy_Progress.Value = boss.Health;
                         bulletsToRemove.Add(bullet);
                         score++;
                     }
@@ -548,6 +548,8 @@ namespace DragonBall
             {
                 C_Enemy enemy = new C_Enemy();
                 enemy.form = player.form;
+                enemy.Health = player.form + 2;
+                Enemy_Progress.Maximum = player.form + 2;
                 enemy.SetFrame();
 
                 enemy.X = this.Width + enemy.X;
