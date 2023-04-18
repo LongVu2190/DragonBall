@@ -13,6 +13,7 @@ namespace DragonBall.Objects
     internal class C_Player : A_Object
     {
         public int delayShootTime { get; set; }
+        public bool firstLife;
         public C_Player() 
         {
             Height = 120;
@@ -23,6 +24,7 @@ namespace DragonBall.Objects
             Y = 0;
             form = 0;
             stepFrame = 0;
+            firstLife = false;
             delayShootTime = 15;
             maxSlowDownFPS = 0;
             maxSlowDownFPS = 10;

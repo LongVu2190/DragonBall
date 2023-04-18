@@ -311,8 +311,20 @@ namespace DragonBall
 
             if (player.Health == 0 && isStart)
             {
-                isEnd = true;
-                EndGame();
+                if (!player.firstLife && isBoss)
+                {
+                    player.Health = 20;
+                    Player_Progress.Maximum = 20;
+                    Player_Progress.Value = 20;
+                    Transformation(4, 8, 22);
+                    player.firstLife = true;
+                }
+                else
+                {
+                    isEnd = true;
+                    EndGame();
+                }
+                
             }
 
             if (score == 0)
@@ -343,11 +355,6 @@ namespace DragonBall
             {
                 Level_Progress.Value = 1;
                 CreateBoss();
-                score++;
-            }
-            else if (score == 25)
-            {
-                Transformation(4, 8, 22);
                 score++;
             }
         }
@@ -559,6 +566,8 @@ namespace DragonBall
         }
         private void CreateBoss()
         {
+            player.Health = 2;
+            Player_Progress.Value = 2;
             Boss_PBox.Visible = true;
             Enemy_Progress.Size = new Size(300, 29);
             Enemy_Progress.Location = new Point(700, 128);
@@ -571,8 +580,8 @@ namespace DragonBall
             boss.Y = labelSize;
             Boss_Timer.Enabled = true;
 
-            Enemy_Progress.Maximum = 20;
-            Enemy_Progress.Value = 20;
+            Enemy_Progress.Maximum = boss.Health;
+            Enemy_Progress.Value = boss.Health;
 
             Invalidate();
         }
@@ -588,7 +597,7 @@ namespace DragonBall
             
             player.form = form;
            
-            if (isBoss)
+            if (isBoss && !player.firstLife)
             {
                 Enemy_Progress.Maximum = boss.Health;
             }
@@ -596,6 +605,7 @@ namespace DragonBall
             {
                 Enemy_Progress.Maximum = player.form + 2;
             }
+
             player.delayShootTime = delayShootTime;
             this.bulletSpeed = bulletSpeed;
 
