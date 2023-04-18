@@ -73,7 +73,6 @@ namespace DragonBall
             }
             stepFrame++;
 
-            Console.WriteLine("stepFrame" + stepFrame);
             Main_PBox.Image = Image.FromFile(imageMovements[stepFrame]);
 
             if (stepFrame == endFrame)
