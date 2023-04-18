@@ -35,6 +35,7 @@ namespace DragonBall
         int score;
         int numEnemies;
         int bulletSpeed;
+        int status;
 
         bool goLeft, goRight, goUp, goDown;
 
@@ -115,16 +116,17 @@ namespace DragonBall
             Level_Progress.Value = 1;
             isLocked = true;
             isEnd = true;
-            bossBullets.Clear();
+            if (isBoss)
+                bossBullets.Clear();
 
             Invalidate();
 
             if (player.Health == 0)
-                MessageBox.Show("You lose", "Notification");
+                status = 2;
             else
-                MessageBox.Show("You win", "Notification");
+                status = 1;
 
-            EndGame end = new EndGame(this);
+            EndGame end = new EndGame(this, status);
             end.ShowDialog();
         }
         private void PauseGame()
