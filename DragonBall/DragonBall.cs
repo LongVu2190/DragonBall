@@ -549,7 +549,6 @@ namespace DragonBall
                 C_Enemy enemy = new C_Enemy();
                 enemy.form = player.form;
                 enemy.Health = player.form + 2;
-                Enemy_Progress.Maximum = player.form + 2;
                 enemy.SetFrame();
 
                 enemy.X = this.Width + enemy.X;
@@ -585,7 +584,7 @@ namespace DragonBall
             player.slowDownFPS = 0;
             player.stepFrame = -1;
             delayShoot = 0;
-
+            Enemy_Progress.Maximum = player.form + 2;
             player.form = form;
             player.delayShootTime = delayShootTime;
             this.bulletSpeed = bulletSpeed;
