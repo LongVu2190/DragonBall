@@ -186,6 +186,7 @@ namespace DragonBall
                     };
                     if (bulletHit.Bounds.IntersectsWith(bossHit.Bounds))
                     {
+                        boss.Health--;
                         Enemy_Progress.Value = boss.Health;
                         bulletsToRemove.Add(bullet);
                         score++;
