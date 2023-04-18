@@ -433,6 +433,9 @@ namespace DragonBall
                 if (enemy.X + enemy.Width < 0)
                 {
                     enemiesToRemove.Add(enemy);
+                    player.Health--;
+                    if (player.Health >= 0)
+                        Player_Progress.Value--;
                 }
                 enemy.SetFrame();
                 AnimateEnemy();
@@ -566,8 +569,8 @@ namespace DragonBall
         }
         private void CreateBoss()
         {
-            player.Health = 2;
-            Player_Progress.Value = 2;
+            player.Health = 3;
+            Player_Progress.Value = 3;
             Boss_PBox.Visible = true;
             Enemy_Progress.Size = new Size(300, 29);
             Enemy_Progress.Location = new Point(700, 128);
