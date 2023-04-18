@@ -155,7 +155,7 @@ namespace DragonBall
             {
                 return;
             }
-            
+
             Canvas.DrawImage(player.Image, player.X, player.Y, player.Width, player.Height);
             if (isBoss)
             {
@@ -249,7 +249,7 @@ namespace DragonBall
                             player.Health--;
                             Player_Progress.Value--;
                         }
-                            
+
                     }
                 }
 
@@ -324,7 +324,7 @@ namespace DragonBall
                     isEnd = true;
                     EndGame();
                 }
-                
+
             }
 
             if (score == 0)
@@ -447,7 +447,7 @@ namespace DragonBall
 
             if (boss.Y < labelSize || boss.Y > this.Height - boss.Height - 20) boss.Direction *= -1;
 
-            if (new Random().Next(0, 100) < 15)
+            if (new Random().Next(0, 50) < 15)
             {
                 BossShooting();
             }
@@ -594,9 +594,9 @@ namespace DragonBall
             player.slowDownFPS = 0;
             player.stepFrame = -1;
             delayShoot = 0;
-            
+
             player.form = form;
-           
+
             if (isBoss && !player.firstLife)
             {
                 Enemy_Progress.Maximum = boss.Health;
