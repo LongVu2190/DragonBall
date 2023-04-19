@@ -319,8 +319,6 @@ namespace DragonBall
                     Player_Progress.Value = 20;
 
                     Level_Progress.SetState(3);
-                    Level_Progress.Value = player.form + 4;
-
                     Level_Progress.Refresh();
 
                     Transformation(4, 8, 22);
