@@ -319,7 +319,7 @@ namespace DragonBall
                     Player_Progress.Value = 20;
 
                     Level_Progress.SetState(3);
-                    Level_Progress.Value = Level_Progress.Maximum;
+                    Level_Progress.Value = player.form + 4;
 
                     Level_Progress.Refresh();
 
@@ -600,6 +600,7 @@ namespace DragonBall
 
             Enemy_Progress.Maximum = boss.Health;
             Enemy_Progress.Value = boss.Health;
+
             Enemy_Progress.Refresh();
         }
 
