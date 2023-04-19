@@ -89,6 +89,7 @@ namespace DragonBall
             Level_Timer.Enabled = true;
             Enemy_Timer.Enabled = true;
 
+            Player_Progress.Maximum = player.Health;
             Enemy_Progress.Maximum = 2;
 
             for (int a = 0; a < 4; a++)
@@ -210,7 +211,7 @@ namespace DragonBall
                             {
                                 enemiesToRemove.Add(enemy);
                                 score += 1;
-                                if (Level_Progress.Value != 5)
+                                if (Level_Progress.Value != Level_Progress.Maximum)
                                 {
                                     Level_Progress.Value++;
                                 }
@@ -316,6 +317,12 @@ namespace DragonBall
                     player.Health = 20;
                     Player_Progress.Maximum = 20;
                     Player_Progress.Value = 20;
+
+                    Level_Progress.SetState(3);
+                    Level_Progress.Value = Level_Progress.Maximum;
+
+                    Level_Progress.Refresh();
+
                     Transformation(4, 8, 22);
                     player.firstLife = true;
                 }
@@ -337,23 +344,27 @@ namespace DragonBall
             {
                 Transformation(1, 4, 28);
                 Level_Progress.Value = 1;
+                Level_Progress.Maximum = player.form + 5;
                 score++;
             }
-            else if (score == 10)
+            else if (score == 12)
             {
                 Transformation(2, 5, 26);
                 Level_Progress.Value = 1;
-                score++;
-            }
-            else if (score == 15)
-            {
-                Transformation(3, 6, 24);
-                Level_Progress.Value = 1;
+                Level_Progress.Maximum = player.form + 5;
                 score++;
             }
             else if (score == 20)
             {
+                Transformation(3, 6, 24);
                 Level_Progress.Value = 1;
+                Level_Progress.Maximum = player.form + 5;
+                score++;
+            }
+            else if (score == 29)
+            {
+                Level_Progress.Value = 1;
+                Level_Progress.Maximum = player.form + 5;
                 CreateBoss();
                 score++;
             }
@@ -569,11 +580,15 @@ namespace DragonBall
         }
         private void CreateBoss()
         {
-            player.Health = 3;
-            Player_Progress.Value = 3;
+            player.Health = 2;
+            Player_Progress.Value = 2;
+
+            Player_Progress.Refresh();
+
             Boss_PBox.Visible = true;
             Enemy_Progress.Size = new Size(300, 29);
             Enemy_Progress.Location = new Point(700, 128);
+
             isBoss = true;
             enemies.Clear();
             boss = new C_Boss();
@@ -585,8 +600,7 @@ namespace DragonBall
 
             Enemy_Progress.Maximum = boss.Health;
             Enemy_Progress.Value = boss.Health;
-
-            Invalidate();
+            Enemy_Progress.Refresh();
         }
 
         private void Transformation(int form, int bulletSpeed, int delayShootTime)
@@ -600,11 +614,7 @@ namespace DragonBall
 
             player.form = form;
 
-            if (isBoss && !player.firstLife)
-            {
-                Enemy_Progress.Maximum = boss.Health;
-            }
-            else
+            if (!isBoss)
             {
                 Enemy_Progress.Maximum = player.form + 2;
             }
