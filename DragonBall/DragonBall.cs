@@ -48,7 +48,7 @@ namespace DragonBall
         public DragonBall()
         {
             InitializeComponent();
-            AllocConsole();
+            //AllocConsole();
         }
 
         private void DragonBall_Load(object sender, EventArgs e)
@@ -75,8 +75,8 @@ namespace DragonBall
             isBoss = false;
 
             delayShoot = 0;
-            score = 20;
-            numEnemies = 14;
+            score = 0;
+            numEnemies = 8;
             delaySpamEneny = 0;
             maxDelaySpamEneny = 20;
 
@@ -92,18 +92,20 @@ namespace DragonBall
             Player_Progress.Maximum = player.Health;
             Enemy_Progress.Maximum = 2;
 
-            for (int a = 0; a < 4; a++)
+            // Initial enemies
+            for (int i = 0; i < 4; i++)
             {
                 C_Enemy enemy = new C_Enemy();
                 enemy.form = player.form;
                 enemy.SetFrame();
 
                 enemy.X = this.Width + enemy.X;
-                enemy.Y = labelSize + (enemy.Height + 40) * a;
+                enemy.Y = labelSize + (enemy.Height + 40) * i;
                 enemies.Add(enemy);
             }
             Player_Progress.SetState(2);
             Enemy_Progress.SetState(2);
+            Level_Progress.SetState(1);
         }
         private void EndGame()
         {
@@ -626,9 +628,6 @@ namespace DragonBall
 
             Avatar.Image = Image.FromFile(avatars[player.form]);
             this.BackgroundImage = Image.FromFile(maps[player.form]);
-
-            this.bulletSpeed = 100;
-            player.delayShootTime = 1;
         }
         private void SetNoMove()
         {
