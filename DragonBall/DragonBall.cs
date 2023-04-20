@@ -596,6 +596,8 @@ namespace DragonBall
             boss.Y = labelSize;
             Boss_Timer.Enabled = true;
 
+            this.BackgroundImage = Image.FromFile(maps[player.form + 1]);
+
             Enemy_Progress.Maximum = boss.Health;
             Enemy_Progress.Value = boss.Health;
 
