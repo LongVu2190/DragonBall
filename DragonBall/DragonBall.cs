@@ -48,13 +48,8 @@ namespace DragonBall
 
         private void DragonBall_Load(object sender, EventArgs e)
         {
-            AllocConsole();
             StartGame();
         }
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool AllocConsole();
         public void StartGame()
         {
             avatars = Directory.GetFiles("assets/avatars", "*.png").ToList();
