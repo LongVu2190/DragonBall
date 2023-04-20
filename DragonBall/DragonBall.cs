@@ -255,7 +255,6 @@ namespace DragonBall
                             player.Health--;
                             Player_Progress.Value = player.Health;
                         }
-
                     }
                 }
 
@@ -319,9 +318,9 @@ namespace DragonBall
             {
                 if (!player.secondLife && isBoss)
                 {
-                    player.Health = 19;
+                    player.Health = 20;
                     Player_Progress.Maximum = 20;
-                    Player_Progress.Value = 19;
+                    Player_Progress.Value = 20;
 
                     Player_Progress.PerformStep();
                     Level_Progress.SetState(3);
