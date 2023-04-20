@@ -17,7 +17,7 @@ namespace DragonBall
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new DragonBall());
+            Application.Run(new Login());
         }
     }
 }
