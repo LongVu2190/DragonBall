@@ -21,8 +21,8 @@ namespace DragonBall
         private void Start_btn_Click(object sender, EventArgs e)
         {
             this.Hide();
-            DragonBall game = new DragonBall();
-            game.Show();
+            new DragonBall {}.ShowDialog();
+            base.Close();
         }
         private void Tutorial_btn_Click(object sender, EventArgs e)
         {

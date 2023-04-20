@@ -64,6 +64,7 @@
             this.Player_Progress.Maximum = 10;
             this.Player_Progress.Name = "Player_Progress";
             this.Player_Progress.Size = new System.Drawing.Size(189, 29);
+            this.Player_Progress.Step = 1;
             this.Player_Progress.TabIndex = 2;
             this.Player_Progress.Value = 10;
             // 
@@ -73,6 +74,7 @@
             this.Enemy_Progress.Maximum = 2;
             this.Enemy_Progress.Name = "Enemy_Progress";
             this.Enemy_Progress.Size = new System.Drawing.Size(189, 29);
+            this.Enemy_Progress.Step = 1;
             this.Enemy_Progress.TabIndex = 3;
             this.Enemy_Progress.Value = 2;
             // 

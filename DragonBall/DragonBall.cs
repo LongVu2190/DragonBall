@@ -41,15 +41,20 @@ namespace DragonBall
 
         bool isTransform, isShot, isBoss;
 
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool AllocConsole();
+
         public DragonBall()
         {
             InitializeComponent();
+            AllocConsole();
         }
 
         private void DragonBall_Load(object sender, EventArgs e)
         {
-            StartGame();
-        }
+            StartGame();           
+        }      
         public void StartGame()
         {
             avatars = Directory.GetFiles("assets/avatars", "*.png").ToList();
@@ -70,8 +75,8 @@ namespace DragonBall
             isBoss = false;
 
             delayShoot = 0;
-            score = 0;
-            numEnemies = 10;
+            score = 20;
+            numEnemies = 14;
             delaySpamEneny = 0;
             maxDelaySpamEneny = 20;
 
@@ -134,11 +139,14 @@ namespace DragonBall
                 Enemy_Timer.Enabled = false;
                 Boss_Timer.Enabled = false;
                 isPause = true;
+                this.Text = "Dragon Ball - Paused";
                 return;
             }
             Moving_Timer.Enabled = true;
             Level_Timer.Enabled = true;
             Enemy_Timer.Enabled = true;
+            this.Text = "Dragon Ball";
+
             if (isBoss)
                 Boss_Timer.Enabled = true;
             isPause = false;
@@ -236,14 +244,16 @@ namespace DragonBall
                         Location = new Point(player.X, player.Y),
                         Size = new Size(player.Width, player.Height)
                     };
+
                     if (bulletHit.Bounds.IntersectsWith(playerHit.Bounds) && !bullet.isHit)
                     {
                         bullet.isHit = true;
                         bulletsToRemove.Add(bullet);
+
                         if (player.Health > 0)
                         {
                             player.Health--;
-                            Player_Progress.Value--;
+                            Player_Progress.Value = player.Health;
                         }
 
                     }
@@ -307,17 +317,17 @@ namespace DragonBall
 
             if (player.Health == 0 && isStart)
             {
-                if (!player.firstLife && isBoss)
+                if (!player.secondLife && isBoss)
                 {
-                    player.Health = 20;
+                    player.Health = 19;
                     Player_Progress.Maximum = 20;
-                    Player_Progress.Value = 20;
+                    Player_Progress.Value = 19;
 
+                    Player_Progress.PerformStep();
                     Level_Progress.SetState(3);
-                    Level_Progress.Refresh();
 
                     Transformation(4, 8, 22);
-                    player.firstLife = true;
+                    player.secondLife = true;
                 }
                 else
                 {
@@ -573,10 +583,7 @@ namespace DragonBall
         }
         private void CreateBoss()
         {
-            player.Health = 2;
-            Player_Progress.Value = 2;
-
-            Player_Progress.Refresh();
+            player.Health = 1;
 
             Boss_PBox.Visible = true;
             Enemy_Progress.Size = new Size(300, 29);
@@ -596,7 +603,7 @@ namespace DragonBall
             Enemy_Progress.Maximum = boss.Health;
             Enemy_Progress.Value = boss.Health;
 
-            Enemy_Progress.Refresh();
+            Enemy_Progress.PerformStep();
         }
 
         private void Transformation(int form, int bulletSpeed, int delayShootTime)
@@ -620,6 +627,9 @@ namespace DragonBall
 
             Avatar.Image = Image.FromFile(avatars[player.form]);
             this.BackgroundImage = Image.FromFile(maps[player.form]);
+
+            this.bulletSpeed = 100;
+            player.delayShootTime = 1;
         }
         private void SetNoMove()
         {
@@ -683,10 +693,6 @@ namespace DragonBall
             if (e.KeyCode == Keys.Space && !isTransform)
             {
                 Shooting();
-            }
-            if (e.KeyCode == Keys.E && !isTransform)
-            {
-                EndGame();
             }
             if (e.KeyCode == Keys.C && !isTransform)
             {
