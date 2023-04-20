@@ -15,6 +15,7 @@ namespace DragonBall
         public Login()
         {
             InitializeComponent();
+            this.BackgroundImage = Properties.Resources.Wall1;
         }
 
         private void Start_btn_Click(object sender, EventArgs e)
@@ -25,11 +26,11 @@ namespace DragonBall
         }
         private void Tutorial_btn_Click(object sender, EventArgs e)
         {
-
+            this.BackgroundImage = Properties.Resources.Wall2;
         }
         private void About_btn_Click(object sender, EventArgs e)
         {
-
+            this.BackgroundImage = Properties.Resources.Wall3;
         }
       
     }

@@ -106,6 +106,15 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="bin\Debug\assets\Wall1.JPG" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\assets\Wall2.JPG" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\assets\Wall3.JPG" />
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
