@@ -123,6 +123,9 @@
             this.Controls.Add(this.Avatar);
             this.Controls.Add(this.Enemy_Progress);
             this.Controls.Add(this.Player_Progress);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "DragonBall";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Dragon Ball";
