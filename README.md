@@ -1,1 +1,2 @@
-# DragonBall
+# Midterm Project
+- Subject: Windows Programming
